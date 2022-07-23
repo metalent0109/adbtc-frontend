@@ -1,11 +1,8 @@
 import React, { VFC, useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router-dom'
-import {
-  auth,
-  registerWithEmailAndPassword,
-  signInWithGoogle,
-} from '../../firebaseSetup'
+import { initializeApp } from 'firebase/app'
+import { auth } from '../../firebaseSetup'
 import ReCAPTCHA from 'react-google-recaptcha'
 
 import { makeStyles } from '@mui/styles'
@@ -29,6 +26,11 @@ import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
 import { validateForm, validEmailRegex } from 'utils/utility'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { addDoc, collection, getFirestore } from 'firebase/firestore'
+import { firebaseConfig } from 'firebaseConfig'
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
 
 const useStyles = makeStyles(styles)
 
@@ -76,7 +78,7 @@ const SignUp: VFC = () => {
 
     switch (name) {
       case 'name':
-        errorValues.name = value.length < 0 ? 'Name field is required' : ''
+        errorValues.name = value.length === 0 ? 'Name field is required' : ''
         break
       case 'email':
         errorValues.email = validEmailRegex.test(value)
@@ -97,6 +99,28 @@ const SignUp: VFC = () => {
     setErrors(errorValues)
   }
 
+  const registerWithEmailAndPassword = async (
+    name: any,
+    email: string,
+    password: string,
+  ) => {
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password)
+      const user = res.user
+      await addDoc(collection(db, 'user'), {
+        uid: user.uid,
+        name,
+        authProvider: 'local',
+        email,
+      })
+      setIsRegistered(true)
+    } catch (error: any) {
+      setSubmitError(error.message)
+      console.error(error.message)
+      return
+    }
+  }
+
   const registerUser = () => {
     if (
       registerInput.name.length === 0 ||
@@ -114,8 +138,7 @@ const SignUp: VFC = () => {
       )
     } else {
       console.log('Invalid form')
-    }
-    setIsRegistered(true)
+    }    
   }
 
   useEffect(() => {
@@ -204,7 +227,8 @@ const SignUp: VFC = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={6}>
                 <Box mb={2}>
-                  {submitError.length > 0 && (
+                  {submitError ===
+                    'Firebase: Error (auth/email-already-in-use).' && (
                     <span
                       style={{
                         color: 'red',
@@ -212,7 +236,7 @@ const SignUp: VFC = () => {
                         marginBottom: '20px',
                       }}
                     >
-                      {submitError}
+                      {`Email is already in use`}
                     </span>
                   )}
                 </Box>

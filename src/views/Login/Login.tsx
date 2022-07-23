@@ -1,6 +1,6 @@
 import React, { VFC, useState, useEffect } from 'react'
-import { useNavigate, Link as NavLink } from 'react-router-dom'
-import { auth, logInWithEmailAndPassword } from '../../firebaseSetup'
+import { useNavigate } from 'react-router-dom'
+import { auth } from '../../firebaseSetup'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import ReCAPTCHA from 'react-google-recaptcha'
 
@@ -25,6 +25,7 @@ import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
 import { validateForm, validEmailRegex } from 'utils/utility'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 const useStyles = makeStyles(styles)
 
@@ -71,6 +72,15 @@ const Login: VFC = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setCaptcha(event.target.value)
   }
+
+  const logInWithEmailAndPassword = async (email: any, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      setSubmitError(error.message)
+      console.error(error);
+    }
+  };
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -183,7 +193,7 @@ const Login: VFC = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={6}>
                 <Box mb={2}>
-                  {submitError.length > 0 && (
+                  {submitError === "Firebase: Error (auth/wrong-password)." && (
                     <span
                       style={{
                         color: 'red',
@@ -191,7 +201,7 @@ const Login: VFC = () => {
                         marginBottom: '20px',
                       }}
                     >
-                      {submitError}
+                      {`Invalid email or password`}
                     </span>
                   )}
                 </Box>
