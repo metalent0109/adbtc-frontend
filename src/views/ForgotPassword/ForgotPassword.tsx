@@ -1,4 +1,6 @@
-import React, { VFC } from 'react'
+import React, { VFC, useState, useEffect } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth, sendPasswordReset } from '../../firebaseSetup'
 import ReCAPTCHA from 'react-google-recaptcha'
 import * as yup from "yup";
 import { Formik } from 'formik';
@@ -29,13 +31,17 @@ const defaultValues = {
 }
 
 const ForgotPassword: VFC = () => {
+  const [user, loading] = useAuthState(auth)
 
   const classes = useStyles()
   const navigate = useNavigate()
-
-  const onHandleSubmit = () => {
-    navigate('/index')
-  }
+  useEffect(() => {
+    if (loading) return
+    if (user) {
+      alert("Password reset link sent to your email")
+      navigate("/index")
+    }
+  }, [user, loading, navigate])
 
   return (
     <Box>
@@ -51,7 +57,9 @@ const ForgotPassword: VFC = () => {
             <Formik
               initialValues={{ ...defaultValues }}
               validationSchema={ResetPasswordFormSchema}
-              onSubmit={onHandleSubmit}
+              onSubmit={(values) => {
+                sendPasswordReset(values)
+              }}
             >
               {
                 ({ errors, handleChange, handleSubmit, touched }) => (

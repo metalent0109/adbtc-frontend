@@ -1,5 +1,8 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
+import { useAuthState } from "react-firebase-hooks/auth"
+import { auth } from "../../firebaseSetup"
 import { makeStyles } from "@mui/styles";
+import { useNavigate } from 'react-router-dom'
 
 import PaymentIcon from '@mui/icons-material/Payment';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -15,8 +18,15 @@ import styles from 'assets/jss/pages/dashboardStyles'
 const useStyles = makeStyles(styles)
 
 const Dashboard: FC = () => {
+  const [user] = useAuthState(auth)
+
+  const navigate = useNavigate()
 
   const classes = useStyles()
+
+  useEffect(() => {
+    if (!user) navigate("/login")
+  }, [user, navigate])
 
   return (
     <Layout title="adBTC">
