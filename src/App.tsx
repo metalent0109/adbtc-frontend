@@ -87,11 +87,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
-          {!user && (
-            <Fragment>
-              <Route path="/signup" element={<SignUp />} />
-            </Fragment>
-          )}
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot_password" element={<ForgotPassword />} />
 
           <Route path="/index" element={<Dashboard />} />
