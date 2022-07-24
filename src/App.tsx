@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { Fragment, useEffect } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { auth } from './firebaseSetup'
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import LandingPage from 'views/LandingPage'
 import Login from 'views/Login'
@@ -75,90 +77,99 @@ import SurfAbuse from 'views/SurfAbuse'
 import IndexEarn from 'views/IndexEarn'
 import SurfTopup from 'views/SurfTopup'
 
-const theme = createTheme({});
+const theme = createTheme({})
 
 function App() {
+  const [user] = useAuthState(auth)
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<LandingPage />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route path='/forgot_password' element={<ForgotPassword />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          {!user && (
+            <Fragment>
+              <Route path="/signup" element={<SignUp />} />
+            </Fragment>
+          )}
+          <Route path="/forgot_password" element={<ForgotPassword />} />
 
+          <Route path="/index" element={<Dashboard />} />
+          {user && (
+            <Fragment>
+              <Route path="/surf/browse" element={<SurfBrowse />} />
+              <Route path="/surfiat/browse" element={<SurfiatBrowse />} />
+              <Route path="/video/inf" element={<VideoInf />} />
+              <Route path="/surftab/inf" element={<SurftabInf />} />
+              <Route path="/shortlink" element={<ShortLinks />} />
 
-          <Route path='/index' element={<Dashboard />} />
-          <Route path='/surf/browse' element={<SurfBrowse />} />
-          <Route path='/surfiat/browse' element={<SurfiatBrowse />} />
-          <Route path='/video/inf' element={<VideoInf />} />
-          <Route path='/surftab/inf' element={<SurftabInf />} />
-          <Route path='/shortlink' element={<ShortLinks />} />
+              <Route path="/acc/balance" element={<Withdraw />} />
+              <Route path="/acc/ref" element={<ReferralSystem />} />
+              <Route path="/acc/send_code" element={<SendCode />} />
+              <Route path="/acc/change_wallet" element={<ChangeWallet />} />
+              <Route path="/security" element={<Security />} />
+              <Route path="/acc/code_fh" element={<CodeFh />} />
+              <Route
+                path="/acc/send_code_payeer"
+                element={<SendCodePayeer />}
+              />
+              <Route path="/acc/code_wbtc" element={<CodeWbtc />} />
+              <Route path="/acc/wfh" element={<AccountWfh />} />
+              <Route path="/acc/wbtc" element={<AccountWbtc />} />
+              <Route path="/acc/wwbtc" element={<AccountWwbtc />} />
+              <Route path="/index/move_balance" element={<MoveBalance />} />
 
+              <Route path="/surf/projects" element={<SurfProjects />} />
+              <Route path="/surf/add" element={<SurfAdd />} />
+              <Route path="/surf/edit" element={<EditSurfProject />} />
+              <Route path="/surf/geo" element={<SurfProjectGeo />} />
+              <Route path="/surf/:id" element={<SurfProjectDetail />} />
+              <Route path="/surf/limit" element={<SurfProjectLimit />} />
+              <Route path="/surfiat/projects" element={<SurfiatProjects />} />
+              <Route path="/surfiat/add" element={<SurfiatAdd />} />
+              <Route path="/surfiat/limit" element={<SurfiatProjectLimit />} />
+              <Route path="/surfiat/edit" element={<EditSurfiatProject />} />
+              <Route path="/surfiat/geo" element={<SurfiatProjectGeo />} />
+              <Route path="/surfiat/:id" element={<SurfiatProjectDetail />} />
+              <Route path="/video/projects" element={<VideoProjects />} />
+              <Route path="/video/add" element={<VideoAdd />} />
+              <Route path="/video/topup" element={<VideoTopup />} />
+              <Route path="/video/edit" element={<EditVideoProject />} />
+              <Route path="/video/geo" element={<VideoProjectGeo />} />
+              <Route path="/video/:id" element={<VideoProjectDetail />} />
+              <Route path="/video/limit" element={<VideoProjectLimit />} />
+              <Route path="/surftab/projects" element={<SurftabProjects />} />
+              <Route path="/surftab/add" element={<SurftabAdd />} />
+              <Route path="/surftab/topup" element={<SurftabTopup />} />
+              <Route path="/autosurf/projects" element={<AutosurfProjects />} />
+              <Route path="/autosurf/add" element={<AutosurfAdd />} />
+              <Route path="/autosurf/topup" element={<AutosurfTopup />} />
 
-          <Route path='/acc/balance' element={<Withdraw />} />
-          <Route path='/acc/ref' element={<ReferralSystem />} />
-          <Route path='/acc/send_code' element={<SendCode />} />
-          <Route path='/acc/change_wallet' element={<ChangeWallet />} />
-          <Route path='/security' element={<Security />} />
-          <Route path='/acc/code_fh' element={<CodeFh />} />
-          <Route path='/acc/send_code_payeer' element={<SendCodePayeer />} />
-          <Route path='/acc/code_wbtc' element={<CodeWbtc />} />
-          <Route path='/acc/wfh' element={<AccountWfh />} />
-          <Route path='/acc/wbtc' element={<AccountWbtc />} />
-          <Route path='/acc/wwbtc' element={<AccountWwbtc />} />
-          <Route path='/index/move_balance' element={<MoveBalance />} />
+              <Route path="/market/index" element={<ReferralMarket />} />
+              <Route path="/market/buy/:id" element={<BuyReferral />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/info/top" element={<TopSurfers />} />
+              <Route path="/info/today/:id" element={<TodayVisits />} />
+              <Route path="/info/me" element={<AccountInfo />} />
+              <Route path="/acc/options" element={<Settings />} />
 
-          <Route path='/surf/projects' element={<SurfProjects />} />
-          <Route path='/surf/add' element={<SurfAdd />} />
-          <Route path='/surf/edit' element={<EditSurfProject />} />
-          <Route path='/surf/geo' element={<SurfProjectGeo />} />
-          <Route path='/surf/:id' element={<SurfProjectDetail />} />
-          <Route path='/surf/limit' element={<SurfProjectLimit />} />
-          <Route path='/surfiat/projects' element={<SurfiatProjects />} />
-          <Route path='/surfiat/add' element={<SurfiatAdd />} />
-          <Route path='/surfiat/limit' element={<SurfiatProjectLimit />} />
-          <Route path='/surfiat/edit' element={<EditSurfiatProject />} />
-          <Route path='/surfiat/geo' element={<SurfiatProjectGeo />} />
-          <Route path='/surfiat/:id' element={<SurfiatProjectDetail />} />
-          <Route path='/video/projects' element={<VideoProjects />} />
-          <Route path='/video/add' element={<VideoAdd />} />
-          <Route path='/video/topup' element={<VideoTopup />} />
-          <Route path='/video/edit' element={<EditVideoProject />} />
-          <Route path='/video/geo' element={<VideoProjectGeo />} />
-          <Route path='/video/:id' element={<VideoProjectDetail />} />
-          <Route path='/video/limit' element={<VideoProjectLimit />} />
-          <Route path='/surftab/projects' element={<SurftabProjects />} />
-          <Route path='/surftab/add' element={<SurftabAdd />} />
-          <Route path='/surftab/topup' element={<SurftabTopup />} />
-          <Route path='/autosurf/projects' element={<AutosurfProjects />} />
-          <Route path='/autosurf/add' element={<AutosurfAdd />} />
-          <Route path='/autosurf/topup' element={<AutosurfTopup />} />
-
-
-          <Route path='/market/index' element={<ReferralMarket />} />
-          <Route path='/market/buy/:id' element={<BuyReferral />} />
-          <Route path='/help' element={<Help />} />
-          <Route path='/info/top' element={<TopSurfers />} />
-          <Route path='/info/today/:id' element={<TodayVisits />} />
-          <Route path='/info/me' element={<AccountInfo />} />
-          <Route path='/acc/options' element={<Settings />} />
-
-          <Route path='/info/rating' element={<InfoRating />} />
-          <Route path='/info/rub' element={<InfoRub />} />
-          <Route path='/acc/fiat' element={<AccountFiat />} />
-          <Route path='/deposit' element={<Deposit />} />
-          <Route path='/index/move_rub' element={<MoveRub />} />
-          <Route path='/payeer/fiat' element={<PayeerFiat />} />
-          <Route path='/faucetpay/deposit' element={<FaucetpayDeposit />} />
-          <Route path='/payeer/fund' element={<PayeerFund />} />
-          <Route path='/surf/abuse' element={<SurfAbuse />} />
-          <Route path='/index/earn' element={<IndexEarn />} />
-          <Route path='/surf/topup' element={<SurfTopup />} />
+              <Route path="/info/rating" element={<InfoRating />} />
+              <Route path="/info/rub" element={<InfoRub />} />
+              <Route path="/acc/fiat" element={<AccountFiat />} />
+              <Route path="/deposit" element={<Deposit />} />
+              <Route path="/index/move_rub" element={<MoveRub />} />
+              <Route path="/payeer/fiat" element={<PayeerFiat />} />
+              <Route path="/faucetpay/deposit" element={<FaucetpayDeposit />} />
+              <Route path="/payeer/fund" element={<PayeerFund />} />
+              <Route path="/surf/abuse" element={<SurfAbuse />} />
+              <Route path="/index/earn" element={<IndexEarn />} />
+              <Route path="/surf/topup" element={<SurfTopup />} />
+            </Fragment>
+          )}
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App

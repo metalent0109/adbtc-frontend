@@ -1,4 +1,6 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useEffect } from 'react'
+import { useAuthState } from "react-firebase-hooks/auth"
+import { auth, logout } from "../../../firebaseSetup"
 import { useLocation, useNavigate } from 'react-router-dom'
 import { makeStyles } from "@mui/styles";
 import clsx from 'clsx'
@@ -26,7 +28,7 @@ interface Props {
 }
 
 const MenuCollapse: FC<Props> = (props) => {
-
+  const [user] = useAuthState(auth)
   const { menu, isSidebar } = props
 
   const classes = useStyles()
@@ -34,6 +36,10 @@ const MenuCollapse: FC<Props> = (props) => {
   const location = useLocation()
 
   const [expanded, setExpanded] = useState(true)
+
+  useEffect(() => {
+    if (!user) navigate("/login")
+  }, [user, navigate])
 
   return (
     <Box className={clsx(classes.collpaseMenu, { [classes.sidebarCollpase]: isSidebar, [classes.noTitle]: !menu.title })} mb={1}>
@@ -61,7 +67,7 @@ const MenuCollapse: FC<Props> = (props) => {
               <MenuItem
                 className={clsx({ [classes.activedMenu]: location.pathname === linkItem.link })}
                 key={`${menu.id}-${linkItem.title}`}
-                onClick={() => {
+                onClick={`${linkItem.title === "Logout"}` ? () => {logout()} : () => {
                   if (linkItem.target) {
                     window.open(linkItem.link, '_blank')
                   } else {

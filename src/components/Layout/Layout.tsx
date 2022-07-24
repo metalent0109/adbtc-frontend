@@ -177,7 +177,7 @@ const Layout: FC<Props> = (props) => {
       children: [
         {
           title: 'Logout',
-          link: '/',
+          link: '/login',
           icon: <SettingsPowerIcon />
         },
       ]
