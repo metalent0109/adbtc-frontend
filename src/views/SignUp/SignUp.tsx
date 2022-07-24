@@ -50,7 +50,7 @@ const SignUp: VFC = () => {
   const [registerInput, setRegisterInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
-  const [loading] = useAuthState(auth)
+  const [user, loading] = useAuthState(auth)
   const [isRegistered, setIsRegistered] = useState(false)
 
   const classes = useStyles()
@@ -143,10 +143,10 @@ const SignUp: VFC = () => {
 
   useEffect(() => {
     if (loading) return
-    if (isRegistered) {
-      navigate('/login')
+    if (user) {
+      navigate('/index')
     }
-  }, [isRegistered, loading, navigate])
+  }, [user, loading, navigate])
 
   return (
     <Box>
