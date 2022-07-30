@@ -1,8 +1,10 @@
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
-  apiKey: "AIzaSyCBoBjsQtpXOgrPXS9AzWNYOGW-X57M7Ww",
-  authDomain: "fir-react-auth-5fa15.firebaseapp.com",
-  projectId: "fir-react-auth-5fa15",
-  storageBucket: "fir-react-auth-5fa15.appspot.com",
-  messagingSenderId: "1021698436213",
-  appId: "1:1021698436213:web:111208aae1d21151b09c3c"
+  apiKey: "AIzaSyDRjMlg0N36hHG4PTGOR64cGFE4zohYco4",
+  authDomain: "fir-btcads.firebaseapp.com",
+  projectId: "fir-btcads",
+  storageBucket: "fir-btcads.appspot.com",
+  messagingSenderId: "470955603873",
+  appId: "1:470955603873:web:ebed99a034bc49ef9b3de0",
+  measurementId: "G-LYTKKSRKWF"
 };
