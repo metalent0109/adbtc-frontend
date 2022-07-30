@@ -18,15 +18,17 @@ import styles from 'assets/jss/pages/dashboardStyles'
 const useStyles = makeStyles(styles)
 
 const Dashboard: FC = () => {
-  const [user] = useAuthState(auth)
 
   const navigate = useNavigate()
 
   const classes = useStyles()
 
   useEffect(() => {
-    if (!user) navigate("/login")
-  }, [user, navigate])
+    const  user = localStorage.getItem("jwtToken")
+    if (user) {
+      navigate("/index")
+    }
+  }, [navigate])
 
   return (
     <Layout title="adBTC">

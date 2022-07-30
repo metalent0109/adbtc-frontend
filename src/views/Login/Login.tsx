@@ -1,4 +1,5 @@
 import React, { VFC, useState, useEffect } from 'react'
+import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebaseSetup'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -43,6 +44,7 @@ const Login: VFC = () => {
   const [loginInput, setLoginInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
+  const [isLoggedIn, setIsLogged] = useState(false)
   const [user, loading] = useAuthState(auth)
 
   const classes = useStyles()
@@ -55,13 +57,14 @@ const Login: VFC = () => {
   const open = Boolean(anchorEl)
 
   useEffect(() => {
+    const  user = localStorage.getItem("jwtToken")
     if (loading) {
       return
     }
-    if (user) {
+    if (isLoggedIn || user) {
       navigate('/index')
     }
-  }, [user, loading, navigate])
+  }, [isLoggedIn, loading, navigate])
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -72,15 +75,6 @@ const Login: VFC = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setCaptcha(event.target.value)
   }
-
-  const logInWithEmailAndPassword = async (email: any, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-      setSubmitError(error.message)
-      console.error(error);
-    }
-  };
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -106,19 +100,31 @@ const Login: VFC = () => {
     setErrors(errorValues)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (loginInput.email.length === 0 || loginInput.password.length === 0) {
       setSubmitError('Email and Password fields are required')
       return
     }
     if (validateForm(errors)) {
-      logInWithEmailAndPassword(loginInput.email, loginInput.password)
+      const data = {
+        email: loginInput.email,
+        password: loginInput.password
+      }
+      await axios
+        .post('http://localhost:5000/api/user/login', data)
+        .then((user) => {
+          console.log(user.data)
+          const token = user.data.token
+          localStorage.setItem('jwtToken', token)
+          setIsLogged(true)
+          navigate('/index')
+        }).catch((error) => {
+          console.log(error.response.data.error)
+          setSubmitError(error.response.data.error)
+        })
       return
     } else {
       console.log('Invalid form')
-    }
-    if (!user) {
-      setSubmitError('Invalid email or password')
     }
   }
 
@@ -193,7 +199,7 @@ const Login: VFC = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={6}>
                 <Box mb={2}>
-                  {submitError === "Firebase: Error (auth/wrong-password)." && (
+                  {submitError && (
                     <span
                       style={{
                         color: 'red',
@@ -201,7 +207,7 @@ const Login: VFC = () => {
                         marginBottom: '20px',
                       }}
                     >
-                      {`Invalid email or password`}
+                      {submitError}
                     </span>
                   )}
                 </Box>

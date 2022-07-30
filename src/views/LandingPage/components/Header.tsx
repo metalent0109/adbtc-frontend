@@ -16,7 +16,9 @@ import { auth, signInWithGoogle } from '../../../firebaseSetup'
 const useStyles = makeStyles(styles)
 
 const Header: VFC = () => {
-  const [user, loading] = useAuthState(auth)
+  const userStorage = localStorage.getItem("jwtToken")
+  const [user] = useAuthState(auth)
+
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const classes = useStyles()
@@ -24,13 +26,10 @@ const Header: VFC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (loading) {
-      return
-    }
-    if (user) {
+    if (userStorage) {
       setIsLoggedIn(true)
     }
-  }, [user, loading, navigate])
+  }, [userStorage])
 
   return (
     <Box className={classes.headerSection}>

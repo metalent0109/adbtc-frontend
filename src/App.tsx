@@ -1,6 +1,5 @@
-import React, { Fragment, useEffect } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import React, { Fragment, useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { auth } from './firebaseSetup'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
@@ -80,7 +79,13 @@ import SurfTopup from 'views/SurfTopup'
 const theme = createTheme({})
 
 function App() {
-  const [user] = useAuthState(auth)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  useEffect(() => {
+    const user = localStorage.getItem('jwtToken')
+    if (user) {
+      setIsAuthenticated(true)
+    }
+  }, [])
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -90,9 +95,9 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot_password" element={<ForgotPassword />} />
 
-          <Route path="/index" element={<Dashboard />} />
-          {user && (
+      
             <Fragment>
+              <Route path="/index" element={<Dashboard />} />
               <Route path="/surf/browse" element={<SurfBrowse />} />
               <Route path="/surfiat/browse" element={<SurfiatBrowse />} />
               <Route path="/video/inf" element={<VideoInf />} />
@@ -161,7 +166,7 @@ function App() {
               <Route path="/index/earn" element={<IndexEarn />} />
               <Route path="/surf/topup" element={<SurfTopup />} />
             </Fragment>
-          )}
+      
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

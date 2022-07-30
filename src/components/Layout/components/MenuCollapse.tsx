@@ -1,6 +1,4 @@
 import React, { FC, useState, useEffect } from 'react'
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth, logout } from "../../../firebaseSetup"
 import { useLocation, useNavigate } from 'react-router-dom'
 import { makeStyles } from "@mui/styles";
 import clsx from 'clsx'
@@ -19,6 +17,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import { LinkMenu } from 'typings'
 
 import styles from 'assets/jss/components/adminLayoutStyles'
+import { auth } from 'firebaseSetup';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const useStyles = makeStyles(styles)
 
@@ -28,8 +28,8 @@ interface Props {
 }
 
 const MenuCollapse: FC<Props> = (props) => {
-  const [user] = useAuthState(auth)
   const { menu, isSidebar } = props
+  const [user] = useAuthState(auth)
 
   const classes = useStyles()
   const navigate = useNavigate()
@@ -37,9 +37,17 @@ const MenuCollapse: FC<Props> = (props) => {
 
   const [expanded, setExpanded] = useState(true)
 
+  const logout = () => {
+    localStorage.removeItem("jwtToken")
+    navigate('/login')
+  }
+
   useEffect(() => {
-    if (!user) navigate("/login")
-  }, [user, navigate])
+    const  user = localStorage.getItem("jwtToken")
+    if (!user) {
+      navigate('/login')
+    }
+  }, [navigate])
 
   return (
     <Box className={clsx(classes.collpaseMenu, { [classes.sidebarCollpase]: isSidebar, [classes.noTitle]: !menu.title })} mb={1}>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { initializeApp } from 'firebase/app'
 import { auth } from '../../firebaseSetup'
 import ReCAPTCHA from 'react-google-recaptcha'
+import axios from 'axios'
 
 import { makeStyles } from '@mui/styles'
 
@@ -50,7 +51,6 @@ const SignUp: VFC = () => {
   const [registerInput, setRegisterInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
-  const [user, loading] = useAuthState(auth)
   const [isRegistered, setIsRegistered] = useState(false)
 
   const classes = useStyles()
@@ -99,29 +99,7 @@ const SignUp: VFC = () => {
     setErrors(errorValues)
   }
 
-  const registerWithEmailAndPassword = async (
-    name: any,
-    email: string,
-    password: string,
-  ) => {
-    try {
-      const res = await createUserWithEmailAndPassword(auth, email, password)
-      const user = res.user
-      await addDoc(collection(db, 'user'), {
-        uid: user.uid,
-        name,
-        authProvider: 'local',
-        email,
-      })
-      setIsRegistered(true)
-    } catch (error: any) {
-      setSubmitError(error.message)
-      console.error(error.message)
-      return
-    }
-  }
-
-  const registerUser = () => {
+  const registerUser = async () => {
     if (
       registerInput.name.length === 0 ||
       registerInput.email.length === 0 ||
@@ -131,22 +109,40 @@ const SignUp: VFC = () => {
       return
     }
     if (validateForm(errors)) {
-      registerWithEmailAndPassword(
-        registerInput.name,
-        registerInput.email,
-        registerInput.password,
-      )
+      const data = {
+        name: registerInput.name,
+        email: registerInput.email,
+        password: registerInput.password,
+      }
+      await axios
+        .post('http://localhost:5000/api/user/signup', data)
+        .then((user) => {
+          console.log(user.data)
+          const token = user.data.token
+          localStorage.setItem('jwtToken', token)
+          setIsRegistered(true)
+          navigate('/index')
+        }).catch((error) => {
+          console.log(error.response.data.error)
+          setSubmitError(error.response.data.error)
+        })
+
+      // registerWithEmailAndPassword(
+      //   registerInput.name,
+      //   registerInput.email,
+      //   registerInput.password,
+      // )
     } else {
       console.log('Invalid form')
-    }    
+    }
   }
 
   useEffect(() => {
-    if (loading) return
-    if (user) {
+    const  user = localStorage.getItem("jwtToken")
+    if (isRegistered || user) {
       navigate('/index')
     }
-  }, [user, loading, navigate])
+  }, [isRegistered, navigate])
 
   return (
     <Box>
@@ -227,8 +223,7 @@ const SignUp: VFC = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={6}>
                 <Box mb={2}>
-                  {submitError ===
-                    'Firebase: Error (auth/email-already-in-use).' && (
+                  {submitError && (
                     <span
                       style={{
                         color: 'red',
@@ -236,7 +231,7 @@ const SignUp: VFC = () => {
                         marginBottom: '20px',
                       }}
                     >
-                      {`Email is already in use`}
+                      {submitError}
                     </span>
                   )}
                 </Box>

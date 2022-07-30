@@ -38,6 +38,7 @@ const signInWithGoogle = async () => {
         email: user.email
       });
     }
+    localStorage.setItem("jwtToken", JSON.stringify(user.uid))
   } catch (error) {
     console.error(error);
   }
@@ -79,7 +80,7 @@ const sendPasswordReset = async (email: any) => {
   }
 };
 
-const logout = () => {
+const logoutUser = () => {
   signOut(auth);
 };
 
@@ -90,5 +91,5 @@ export {
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
-  logout
+  logoutUser
 };
