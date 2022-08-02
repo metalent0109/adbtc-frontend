@@ -13,12 +13,15 @@ import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "redux/store"
 
 import { LinkMenu } from 'typings'
 
 import styles from 'assets/jss/components/adminLayoutStyles'
 import { auth } from 'firebaseSetup';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { logout } from 'redux/reducers/authSlice';
 
 const useStyles = makeStyles(styles)
 
@@ -29,7 +32,9 @@ interface Props {
 
 const MenuCollapse: FC<Props> = (props) => {
   const { menu, isSidebar } = props
-  const [user] = useAuthState(auth)
+  // const [user] = useAuthState(auth)
+  const { user } = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch<AppDispatch>()
 
   const classes = useStyles()
   const navigate = useNavigate()
@@ -37,17 +42,16 @@ const MenuCollapse: FC<Props> = (props) => {
 
   const [expanded, setExpanded] = useState(true)
 
-  const logout = () => {
-    localStorage.removeItem("jwtToken")
+  const logoutUser = () => {
+    dispatch(logout())
     navigate('/login')
   }
 
   useEffect(() => {
-    const  user = localStorage.getItem("jwtToken")
     if (!user) {
       navigate('/login')
     }
-  }, [navigate])
+  }, [user, navigate])
 
   return (
     <Box className={clsx(classes.collpaseMenu, { [classes.sidebarCollpase]: isSidebar, [classes.noTitle]: !menu.title })} mb={1}>
@@ -75,7 +79,7 @@ const MenuCollapse: FC<Props> = (props) => {
               <MenuItem
                 className={clsx({ [classes.activedMenu]: location.pathname === linkItem.link })}
                 key={`${menu.id}-${linkItem.title}`}
-                onClick={`${linkItem.title === "Logout"}` ? () => {logout()} : () => {
+                onClick={`${linkItem.title === "Logout"}` ? () => {logoutUser()} : () => {
                   if (linkItem.target) {
                     window.open(linkItem.link, '_blank')
                   } else {

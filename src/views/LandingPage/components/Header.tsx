@@ -25,6 +25,11 @@ const Header: VFC = () => {
 
   const navigate = useNavigate()
 
+  const signUpWithGoogle = () => {
+    signInWithGoogle()
+    setIsLoggedIn(true)
+  }
+
   useEffect(() => {
     if (userStorage) {
       setIsLoggedIn(true)
@@ -61,7 +66,7 @@ const Header: VFC = () => {
             <Button
               variant="contained"
               className={classes.googleLoginBtn}
-              onClick={signInWithGoogle}
+              onClick={signUpWithGoogle}
             >
               {isLoggedIn ? (
                 <svg

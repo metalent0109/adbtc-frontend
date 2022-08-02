@@ -1,10 +1,13 @@
 import React, { VFC, useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth, sendPasswordReset } from '../../firebaseSetup'
+import { toast } from 'react-toastify'
 import ReCAPTCHA from 'react-google-recaptcha'
 import * as yup from "yup";
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from "@mui/styles";
 
@@ -19,6 +22,7 @@ import CustomTextField from 'components/CustomTextField'
 import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
+import { passwordReset } from 'redux/reducers/authSlice';
 
 const useStyles = makeStyles(styles)
 
@@ -31,17 +35,20 @@ const defaultValues = {
 }
 
 const ForgotPassword: VFC = () => {
-  const [user, loading] = useAuthState(auth)
+  const { isSuccess, isLoading, message } = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch<AppDispatch>()
 
   const classes = useStyles()
   const navigate = useNavigate()
   useEffect(() => {
-    if (loading) return
-    if (user) {
-      alert("Password reset link sent to your email")
-      navigate("/index")
+    if (isLoading) return
+    if (message) {
+      toast.success(message.message)
     }
-  }, [user, loading, navigate])
+    if (isSuccess) {
+      navigate("/login")
+    }
+  }, [isSuccess, isLoading, message, navigate])
 
   return (
     <Box>
@@ -58,7 +65,7 @@ const ForgotPassword: VFC = () => {
               initialValues={{ ...defaultValues }}
               validationSchema={ResetPasswordFormSchema}
               onSubmit={(values) => {
-                sendPasswordReset(values)
+                dispatch(passwordReset(values))
               }}
             >
               {

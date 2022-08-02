@@ -1,9 +1,8 @@
 import React, { VFC, useState, useEffect } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { auth } from '../../firebaseSetup'
-import { useAuthState } from 'react-firebase-hooks/auth'
 import ReCAPTCHA from 'react-google-recaptcha'
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from '@mui/styles'
 
@@ -26,7 +25,8 @@ import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
 import { validateForm, validEmailRegex } from 'utils/utility'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { loginUser, reset } from 'redux/reducers/authSlice'
+import Spinner from 'components/Spinner'
 
 const useStyles = makeStyles(styles)
 
@@ -44,8 +44,8 @@ const Login: VFC = () => {
   const [loginInput, setLoginInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
-  const [isLoggedIn, setIsLogged] = useState(false)
-  const [user, loading] = useAuthState(auth)
+  const { user, isError, isSuccess, message, isLoading } = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch<AppDispatch>()
 
   const classes = useStyles()
 
@@ -56,15 +56,7 @@ const Login: VFC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  useEffect(() => {
-    const  user = localStorage.getItem("jwtToken")
-    if (loading) {
-      return
-    }
-    if (isLoggedIn || user) {
-      navigate('/index')
-    }
-  }, [isLoggedIn, loading, navigate])
+  
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -110,23 +102,24 @@ const Login: VFC = () => {
         email: loginInput.email,
         password: loginInput.password
       }
-      await axios
-        .post('http://localhost:5000/api/user/login', data)
-        .then((user) => {
-          console.log(user.data)
-          const token = user.data.token
-          localStorage.setItem('jwtToken', token)
-          setIsLogged(true)
-          navigate('/index')
-        }).catch((error) => {
-          console.log(error.response.data.error)
-          setSubmitError(error.response.data.error)
-        })
+      dispatch(loginUser(data))
       return
     } else {
       console.log('Invalid form')
     }
   }
+
+  useEffect(() => {
+    if (isError) {
+      setSubmitError(message.error)
+    }
+
+    if (isSuccess || user) {
+      navigate('/index')
+    }
+
+    dispatch(reset())
+  }, [user, isError, message, isSuccess, dispatch, navigate])
 
   return (
     <Box>
@@ -149,7 +142,7 @@ const Login: VFC = () => {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
-                    startIcon={<img src="/images/language-icon.png" />}
+                    startIcon={<img src="/images/language-icon.png" alt="language" />}
                     className={classes.langBtn}
                   >
                     Language
@@ -270,8 +263,17 @@ const Login: VFC = () => {
                   </CustomButton>
                 </Box>
                 <Box mt={2}>
-                  <Link
-                    href="/"
+                <CustomButton
+                    variant="contained"
+                    btnColor="dark"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      navigate('/forgot_password')
+                    }}
+                  >
+                    Forgot password
+                  </CustomButton>
+                  {/* <Link
                     className={classes.authLink}
                     onClick={(e) => {
                       e.preventDefault()
@@ -279,7 +281,7 @@ const Login: VFC = () => {
                     }}
                   >
                     Forgot password
-                  </Link>
+                  </Link> */}
                 </Box>
               </Grid>
 

@@ -1,10 +1,8 @@
 import React, { VFC, useState, useEffect } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router-dom'
-import { initializeApp } from 'firebase/app'
-import { auth } from '../../firebaseSetup'
 import ReCAPTCHA from 'react-google-recaptcha'
-import axios from 'axios'
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from '@mui/styles'
 
@@ -27,11 +25,7 @@ import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
 import { validateForm, validEmailRegex } from 'utils/utility'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { addDoc, collection, getFirestore } from 'firebase/firestore'
-import { firebaseConfig } from 'firebaseConfig'
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+import { registerUser, reset } from 'redux/reducers/authSlice'
 
 const useStyles = makeStyles(styles)
 
@@ -51,7 +45,8 @@ const SignUp: VFC = () => {
   const [registerInput, setRegisterInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
-  const [isRegistered, setIsRegistered] = useState(false)
+  const { user, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch<AppDispatch>()
 
   const classes = useStyles()
 
@@ -99,7 +94,7 @@ const SignUp: VFC = () => {
     setErrors(errorValues)
   }
 
-  const registerUser = async () => {
+  const registerNewUser = async () => {
     if (
       registerInput.name.length === 0 ||
       registerInput.email.length === 0 ||
@@ -114,35 +109,23 @@ const SignUp: VFC = () => {
         email: registerInput.email,
         password: registerInput.password,
       }
-      await axios
-        .post('http://localhost:5000/api/user/signup', data)
-        .then((user) => {
-          console.log(user.data)
-          const token = user.data.token
-          localStorage.setItem('jwtToken', token)
-          setIsRegistered(true)
-          navigate('/index')
-        }).catch((error) => {
-          console.log(error.response.data.error)
-          setSubmitError(error.response.data.error)
-        })
-
-      // registerWithEmailAndPassword(
-      //   registerInput.name,
-      //   registerInput.email,
-      //   registerInput.password,
-      // )
+      dispatch(registerUser(data))
     } else {
       console.log('Invalid form')
     }
   }
 
   useEffect(() => {
-    const  user = localStorage.getItem("jwtToken")
-    if (isRegistered || user) {
+    if (isError) {
+      setSubmitError(`User with email: ${registerInput.email} already exists`)
+    }
+
+    if (isSuccess || user) {
       navigate('/index')
     }
-  }, [isRegistered, navigate])
+
+    dispatch(reset())
+  }, [user, isError, message, isSuccess, dispatch, registerInput, navigate])
 
   return (
     <Box>
@@ -165,7 +148,7 @@ const SignUp: VFC = () => {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
-                    startIcon={<img src="/images/language-icon.png" />}
+                    startIcon={<img src="/images/language-icon.png" alt="language" />}
                     className={classes.langBtn}
                   >
                     Language
@@ -302,7 +285,7 @@ const SignUp: VFC = () => {
                   <CustomButton
                     variant="contained"
                     btnColor="dark"
-                    onClick={registerUser}
+                    onClick={registerNewUser}
                   >
                     Sign Up!
                   </CustomButton>
