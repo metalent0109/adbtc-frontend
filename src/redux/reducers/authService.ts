@@ -1,26 +1,24 @@
-import axios from "axios";
 import { ICreateUser, ILoginUser } from "modules/types/user";
 import jwt_decode from "jwt-decode";
-
-const API_URL = "/api/user/";
+import api from "api/api";
 
 // Get a User
 const getMe = async () => {
   const id = localStorage.getItem("jwtTokenId");
-  const response = await axios.get(API_URL + `user/${id}`);
+  const response = await api.get(`user/${id}`);
   return response.data;
 };
 // Get all Users
 const getAll = async () => {
   const id = localStorage.getItem("jwtTokenId");
-  const response = await axios.get(API_URL + `users/${id}`);
+  const response = await api.get(`users/${id}`);
   return response.data;
 };
 
 // Register user
 const register = async (userData: ICreateUser) => {
-  await axios
-    .post(API_URL + "signup", userData)
+  await api
+    .post("signup", userData)
     .then((user) => {
       localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
       let decoded: any = jwt_decode(JSON.stringify(user.data.token));
@@ -48,8 +46,8 @@ const register = async (userData: ICreateUser) => {
 
 // Login User
 const login = async (userData: ILoginUser) => {
-  await axios
-    .post(API_URL + "login", userData)
+  await api
+    .post("login", userData)
     .then((user) => {
       localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
       let decoded: any = jwt_decode(JSON.stringify(user.data.token));
@@ -65,7 +63,7 @@ const login = async (userData: ILoginUser) => {
 
 // Reset password
 const reset = async (userData: string) => {
-  const response = await axios.post(API_URL + "resetpassword", userData);
+  const response = await api.post("resetpassword", userData);
   console.log(response.data);
 
   return response.data;
@@ -73,7 +71,7 @@ const reset = async (userData: string) => {
 
 // Register with google
 const regWithGoogle = async () => {
-  const response = await axios.post(API_URL + "registerWithGoogle");
+  const response = await api.post("registerWithGoogle");
   console.log(response.data);
   if (response.data) {
     localStorage.setItem("jwtToken", JSON.stringify(response.data.token));
