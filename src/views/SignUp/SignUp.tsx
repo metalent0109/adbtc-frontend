@@ -94,7 +94,8 @@ const SignUp: VFC = () => {
     setErrors(errorValues)
   }
 
-  const registerNewUser = async () => {
+  const registerNewUser = async (e: any) => {
+    e.preventDefault()
     if (
       registerInput.name.length === 0 ||
       registerInput.email.length === 0 ||
@@ -117,7 +118,7 @@ const SignUp: VFC = () => {
 
   useEffect(() => {
     if (isError) {
-      setSubmitError(`User with email: ${registerInput.email} already exists`)
+      setSubmitError(message.error)
     }
 
     if (isSuccess || user) {

@@ -19,18 +19,31 @@ const getAll = async () => {
 
 // Register user
 const register = async (userData: ICreateUser) => {
-  const response = await axios.post(API_URL + "signup", userData);
-  console.log(response.data);
+  await axios
+    .post(API_URL + "signup", userData)
+    .then((user) => {
+      localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
+      let decoded: any = jwt_decode(JSON.stringify(user.data.token));
+      console.log(decoded);
+      localStorage.setItem("jwtTokenId", decoded.id.id);
+      return user.data.token;
+    })
+    .catch((error) => {
+      console.log(error.response.data.error);
+      return error.response.data.error;
+    });
+  // const response = await axios.post(API_URL + "signup", userData);
+  // console.log(response.data);
 
-  if (response.data) {
-    localStorage.setItem("jwtToken", JSON.stringify(response.data.token));
-    let decoded: any = jwt_decode(JSON.stringify(response.data.token));
-    console.log(decoded);
-    localStorage.setItem("jwtTokenId", decoded.id.id);
-    return response.data;
-  } else {
-    return response.data.error;
-  }
+  // if (response.data) {
+  //   localStorage.setItem("jwtToken", JSON.stringify(response.data.token));
+  //   let decoded: any = jwt_decode(JSON.stringify(response.data.token));
+  //   console.log(decoded);
+  //   localStorage.setItem("jwtTokenId", decoded.id.id);
+  //   return response.data;
+  // } else {
+  //   return response.data.error;
+  // }
 };
 
 // Login User
