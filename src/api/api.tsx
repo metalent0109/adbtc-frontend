@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export default axios.create({
-    baseURL: "http://localhost:5000/api/user/",
+    baseURL: "https://btcads-backend.herokuapp.com/api/user/",
     headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
