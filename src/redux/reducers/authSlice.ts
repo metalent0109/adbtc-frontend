@@ -145,16 +145,15 @@ export const authSlice = createSlice({
         ...state,
         isLoading: false,
         isSuccess: true,
-        user: payload.token,
-        jwtTokenId: payload.token.id
+        user: payload,
       });
     });
-    builder.addCase(registerUser.rejected, (state, action: any) => {
+    builder.addCase(registerUser.rejected, (state, { payload }) => {
       return (state = {
         ...state,
         isLoading: false,
         isError: true,
-        message: action.payload,
+        message: payload,
         user: null,
         jwtTokenId: null
       });
