@@ -1,10 +1,11 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
-import { auth } from './firebaseSetup'
+import React, { Fragment } from 'react'
+import { BrowserRouter, Route, Routes  } from 'react-router-dom'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from "react-redux"
+import { RootState } from "redux/store"
 
 import LandingPage from 'views/LandingPage'
 import Login from 'views/Login'
@@ -81,13 +82,6 @@ import SurfTopup from 'views/SurfTopup'
 const theme = createTheme({})
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  useEffect(() => {
-    const user = localStorage.getItem('jwtToken')
-    if (user) {
-      setIsAuthenticated(true)
-    }
-  }, [])
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
