@@ -78,6 +78,7 @@ import PayeerFund from 'views/PayeerFund'
 import SurfAbuse from 'views/SurfAbuse'
 import IndexEarn from 'views/IndexEarn'
 import SurfTopup from 'views/SurfTopup'
+import PrivateRoute from 'components/PrivateRoute';
 
 const theme = createTheme({})
 
@@ -93,74 +94,74 @@ function App() {
 
       
             <Fragment>
-              <Route path="/index" element={<Dashboard />} />
-              <Route path="/surf/browse" element={<SurfBrowse />} />
-              <Route path="/surfiat/browse" element={<SurfiatBrowse />} />
-              <Route path="/video/inf" element={<VideoInf />} />
-              <Route path="/surftab/inf" element={<SurftabInf />} />
-              <Route path="/shortlink" element={<ShortLinks />} />
+              <Route path="/index" element={<PrivateRoute page={<Dashboard />} />} />
+              <Route path="/surf/browse" element={<PrivateRoute page={<SurfBrowse />} />} />
+              <Route path="/surfiat/browse" element={<PrivateRoute page={<SurfiatBrowse />} />} />
+              <Route path="/video/inf" element={<PrivateRoute page={<VideoInf />} />} />
+              <Route path="/surftab/inf" element={<PrivateRoute page={<SurftabInf />} />} />
+              <Route path="/shortlink" element={<PrivateRoute page={<ShortLinks />} />} />
 
-              <Route path="/acc/balance" element={<Withdraw />} />
-              <Route path="/acc/ref" element={<ReferralSystem />} />
-              <Route path="/acc/send_code" element={<SendCode />} />
-              <Route path="/acc/change_wallet" element={<ChangeWallet />} />
-              <Route path="/security" element={<Security />} />
-              <Route path="/acc/code_fh" element={<CodeFh />} />
+              <Route path="/acc/balance" element={<PrivateRoute page={<Withdraw />} />} />
+              <Route path="/acc/ref" element={<PrivateRoute page={<ReferralSystem />} />} />
+              <Route path="/acc/send_code" element={<PrivateRoute page={<SendCode />} />} />
+              <Route path="/acc/change_wallet" element={<PrivateRoute page={<ChangeWallet />} />} />
+              <Route path="/security" element={<PrivateRoute page={<Security />} />} />
+              <Route path="/acc/code_fh" element={<PrivateRoute page={<CodeFh />} />} />
               <Route
                 path="/acc/send_code_payeer"
-                element={<SendCodePayeer />}
+                element={<PrivateRoute page={<SendCodePayeer />} />}
               />
-              <Route path="/acc/code_wbtc" element={<CodeWbtc />} />
-              <Route path="/acc/wfh" element={<AccountWfh />} />
-              <Route path="/acc/wbtc" element={<AccountWbtc />} />
-              <Route path="/acc/wwbtc" element={<AccountWwbtc />} />
-              <Route path="/index/move_balance" element={<MoveBalance />} />
+              <Route path="/acc/code_wbtc" element={<PrivateRoute page={<CodeWbtc />} />} />
+              <Route path="/acc/wfh" element={<PrivateRoute page={<AccountWfh />} />} />
+              <Route path="/acc/wbtc" element={<PrivateRoute page={<AccountWbtc />} />} />
+              <Route path="/acc/wwbtc" element={<PrivateRoute page={<AccountWwbtc />} />} />
+              <Route path="/index/move_balance" element={<PrivateRoute page={<MoveBalance />} />} />
 
-              <Route path="/surf/projects" element={<SurfProjects />} />
-              <Route path="/surf/add" element={<SurfAdd />} />
-              <Route path="/surf/edit" element={<EditSurfProject />} />
-              <Route path="/surf/geo" element={<SurfProjectGeo />} />
-              <Route path="/surf/:id" element={<SurfProjectDetail />} />
-              <Route path="/surf/limit" element={<SurfProjectLimit />} />
-              <Route path="/surfiat/projects" element={<SurfiatProjects />} />
-              <Route path="/surfiat/add" element={<SurfiatAdd />} />
-              <Route path="/surfiat/limit" element={<SurfiatProjectLimit />} />
-              <Route path="/surfiat/edit" element={<EditSurfiatProject />} />
-              <Route path="/surfiat/geo" element={<SurfiatProjectGeo />} />
-              <Route path="/surfiat/:id" element={<SurfiatProjectDetail />} />
-              <Route path="/video/projects" element={<VideoProjects />} />
-              <Route path="/video/add" element={<VideoAdd />} />
-              <Route path="/video/topup" element={<VideoTopup />} />
-              <Route path="/video/edit" element={<EditVideoProject />} />
-              <Route path="/video/geo" element={<VideoProjectGeo />} />
-              <Route path="/video/:id" element={<VideoProjectDetail />} />
-              <Route path="/video/limit" element={<VideoProjectLimit />} />
-              <Route path="/surftab/projects" element={<SurftabProjects />} />
-              <Route path="/surftab/add" element={<SurftabAdd />} />
-              <Route path="/surftab/topup" element={<SurftabTopup />} />
-              <Route path="/autosurf/projects" element={<AutosurfProjects />} />
-              <Route path="/autosurf/add" element={<AutosurfAdd />} />
-              <Route path="/autosurf/topup" element={<AutosurfTopup />} />
+              <Route path="/surf/projects" element={<PrivateRoute page={<SurfProjects />} />} />
+              <Route path="/surf/add" element={<PrivateRoute page={<SurfAdd />} />} />
+              <Route path="/surf/edit" element={<PrivateRoute page={<EditSurfProject />} />} />
+              <Route path="/surf/geo" element={<PrivateRoute page={<SurfProjectGeo />} />} />
+              <Route path="/surf/:id" element={<PrivateRoute page={<SurfProjectDetail />} />} />
+              <Route path="/surf/limit" element={<PrivateRoute page={<SurfProjectLimit />} />} />
+              <Route path="/surfiat/projects" element={<PrivateRoute page={<SurfiatProjects />} />} />
+              <Route path="/surfiat/add" element={<PrivateRoute page={<SurfiatAdd />} />} />
+              <Route path="/surfiat/limit" element={<PrivateRoute page={<SurfiatProjectLimit />} />} />
+              <Route path="/surfiat/edit" element={<PrivateRoute page={<EditSurfiatProject />} />} />
+              <Route path="/surfiat/geo" element={<PrivateRoute page={<SurfiatProjectGeo />} />} />
+              <Route path="/surfiat/:id" element={<PrivateRoute page={<SurfiatProjectDetail />} />} />
+              <Route path="/video/projects" element={<PrivateRoute page={<VideoProjects />} />} />
+              <Route path="/video/add" element={<PrivateRoute page={<VideoAdd />} />} />
+              <Route path="/video/topup" element={<PrivateRoute page={<VideoTopup />} />} />
+              <Route path="/video/edit" element={<PrivateRoute page={<EditVideoProject />} />} />
+              <Route path="/video/geo" element={<PrivateRoute page={<VideoProjectGeo />} />} />
+              <Route path="/video/:id" element={<PrivateRoute page={<VideoProjectDetail />} />} />
+              <Route path="/video/limit" element={<PrivateRoute page={<VideoProjectLimit />} />} />
+              <Route path="/surftab/projects" element={<PrivateRoute page={<SurftabProjects />} />} />
+              <Route path="/surftab/add" element={<PrivateRoute page={<SurftabAdd />} />} />
+              <Route path="/surftab/topup" element={<PrivateRoute page={<SurftabTopup />} />} />
+              <Route path="/autosurf/projects" element={<PrivateRoute page={<AutosurfProjects />} />} />
+              <Route path="/autosurf/add" element={<PrivateRoute page={<AutosurfAdd />} />} />
+              <Route path="/autosurf/topup" element={<PrivateRoute page={<AutosurfTopup />} />} />
 
-              <Route path="/market/index" element={<ReferralMarket />} />
-              <Route path="/market/buy/:id" element={<BuyReferral />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/info/top" element={<TopSurfers />} />
-              <Route path="/info/today/:id" element={<TodayVisits />} />
-              <Route path="/info/me" element={<AccountInfo />} />
-              <Route path="/acc/options" element={<Settings />} />
+              <Route path="/market/index" element={<PrivateRoute page={<ReferralMarket />} />} />
+              <Route path="/market/buy/:id" element={<PrivateRoute page={<BuyReferral />} />} />
+              <Route path="/help" element={<PrivateRoute page={<Help />} />} />
+              <Route path="/info/top" element={<PrivateRoute page={<TopSurfers />} />} />
+              <Route path="/info/today/:id" element={<PrivateRoute page={<TodayVisits />} />} />
+              <Route path="/info/me" element={<PrivateRoute page={<AccountInfo />} />} />
+              <Route path="/acc/options" element={<PrivateRoute page={<Settings />} />} />
 
-              <Route path="/info/rating" element={<InfoRating />} />
-              <Route path="/info/rub" element={<InfoRub />} />
-              <Route path="/acc/fiat" element={<AccountFiat />} />
-              <Route path="/deposit" element={<Deposit />} />
-              <Route path="/index/move_rub" element={<MoveRub />} />
-              <Route path="/payeer/fiat" element={<PayeerFiat />} />
-              <Route path="/faucetpay/deposit" element={<FaucetpayDeposit />} />
-              <Route path="/payeer/fund" element={<PayeerFund />} />
-              <Route path="/surf/abuse" element={<SurfAbuse />} />
-              <Route path="/index/earn" element={<IndexEarn />} />
-              <Route path="/surf/topup" element={<SurfTopup />} />
+              <Route path="/info/rating" element={<PrivateRoute page={<InfoRating />} />} />
+              <Route path="/info/rub" element={<PrivateRoute page={<InfoRub />} />} />
+              <Route path="/acc/fiat" element={<PrivateRoute page={<AccountFiat />} />} />
+              <Route path="/deposit" element={<PrivateRoute page={<Deposit />} />} />
+              <Route path="/index/move_rub" element={<PrivateRoute page={<MoveRub />} />} />
+              <Route path="/payeer/fiat" element={<PrivateRoute page={<PayeerFiat />} />} />
+              <Route path="/faucetpay/deposit" element={<PrivateRoute page={<FaucetpayDeposit />} />} />
+              <Route path="/payeer/fund" element={<PrivateRoute page={<PayeerFund />} />} />
+              <Route path="/surf/abuse" element={<PrivateRoute page={<SurfAbuse />} />} />
+              <Route path="/index/earn" element={<PrivateRoute page={<IndexEarn />} />} />
+              <Route path="/surf/topup" element={<PrivateRoute page={<SurfTopup />} />} />
             </Fragment>
       
         </Routes>

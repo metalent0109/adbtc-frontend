@@ -155,7 +155,8 @@ export const authSlice = createSlice({
         isError: true,
         message: payload,
         user: null,
-        jwtTokenId: null
+        jwtTokenId: null,
+        isSuccess: false
       });
     });
 
@@ -178,7 +179,8 @@ export const authSlice = createSlice({
         isError: true,
         message: payload,
         user: null,
-        jwtTokenId: null
+        jwtTokenId: null,
+        isSuccess: false
       });
     });
 
@@ -200,7 +202,8 @@ export const authSlice = createSlice({
         isLoading: false,
         isError: true,
         message: payload,
-        users: []
+        users: [],
+        isSuccess: false
       });
     });
 
@@ -222,7 +225,8 @@ export const authSlice = createSlice({
           isLoading: false,
           isError: true,
           message: payload,
-          user: null
+          user: null,
+          isSuccess: false
         });
       });
 
@@ -246,7 +250,8 @@ export const authSlice = createSlice({
           isError: true,
           message: payload,
           user: null,
-          jwtTokenId: null
+          jwtTokenId: null,
+          isSuccess: false
         });
       });
       // Reset Password
