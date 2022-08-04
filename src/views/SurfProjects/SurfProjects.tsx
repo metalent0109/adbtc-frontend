@@ -68,7 +68,7 @@ const SurfProjects: FC = () => {
       <Typography variant='body1' sx={{ fontSize: '15px', margin: '1rem 0 0.6rem 0' }}>
         It is surfing for satoshis &nbsp;
         <Link
-          href='/'
+          href='/surfiat/projects/'
           underline='none'
           onClick={(e) => { e.preventDefault(); navigate('/surfiat/projects/') }}
         >

@@ -47,11 +47,11 @@ const MenuCollapse: FC<Props> = (props) => {
     navigate('/login')
   }
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/login')
-    }
-  }, [user, navigate])
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate('/login')
+  //   }
+  // }, [user, navigate])
 
   return (
     <Box className={clsx(classes.collpaseMenu, { [classes.sidebarCollpase]: isSidebar, [classes.noTitle]: !menu.title })} mb={1}>
