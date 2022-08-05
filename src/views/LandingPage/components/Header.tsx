@@ -58,6 +58,10 @@ const Header: VFC = () => {
             <Button
               variant="contained"
               className={clsx(classes.signUpBtn, classes.signBtn)}
+              onClick={(e) => {
+                e.preventDefault()
+                navigate('/signup')
+              }}
             >
               SIGN UP
             </Button>
