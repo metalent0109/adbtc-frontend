@@ -2,6 +2,8 @@ import React, { VFC, useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from '@mui/styles'
 
@@ -12,12 +14,16 @@ import Button from '@mui/material/Button'
 
 import styles from 'assets/jss/pages/homeStyles'
 import { auth, signInWithGoogle } from '../../../firebaseSetup'
+import { toast } from 'react-toastify'
+import { regGoogleAuthenticationData } from 'redux/reducers/authSlice'
 
 const useStyles = makeStyles(styles)
 
 const Header: VFC = () => {
   const userStorage = localStorage.getItem("jwtToken")
   const [user] = useAuthState(auth)
+  const { isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
+const dispatch = useDispatch<AppDispatch>()
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -31,10 +37,22 @@ const Header: VFC = () => {
   }
 
   useEffect(() => {
-    if (userStorage) {
+    if (isError) {
+      toast.error(message.error)
+    }
+    if (user) {
+      const data = {
+        name: user.displayName,
+        email: user.email,
+        uid: user.uid,
+        surfingBalance: "0",
+        advertisingBalance: "0"
+      }
+      console.log("user with useAthState", data)
+      dispatch(regGoogleAuthenticationData(data))
       setIsLoggedIn(true)
     }
-  }, [userStorage])
+  }, [user, isError, message, dispatch])
 
   return (
     <Box className={classes.headerSection}>

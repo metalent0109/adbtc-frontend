@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 import LaptopIcon from '@mui/icons-material/Laptop'
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo'
@@ -37,6 +38,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "redux/store"
 import styles from 'assets/jss/components/adminLayoutStyles'
 import { logout } from 'redux/reducers/authSlice';
+import { auth, logoutGoogleUser } from 'firebaseSetup'
 
 const useStyles = makeStyles(styles)
 
@@ -47,6 +49,7 @@ interface Props {
 
 const Layout: FC<Props> = (props) => {
   const classes = useStyles()
+  const [user] = useAuthState(auth)
 
   const { children, title } = props
   const dispatch = useDispatch<AppDispatch>()
@@ -191,8 +194,14 @@ const Layout: FC<Props> = (props) => {
   ]
 
   const logoutUser = () => {
-    dispatch(logout())
-    navigate('/login')
+    if (user) {
+      logoutGoogleUser()
+      dispatch(logout())
+      navigate('/login')
+    } else {
+      dispatch(logout())
+      navigate('/login')
+    }
   }
 
   return (

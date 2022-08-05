@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { ICreateUser, ILoginUser } from "modules/types/user";
+import { ICreateUser, ILoginUser, IRegGoogleData } from "modules/types/user";
 import authService from "./authService";
 
 const user: string | null = localStorage.getItem("jwtToken");
@@ -43,6 +43,24 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Register with google
+export const regGoogleAuthenticationData = createAsyncThunk(
+  "auth/regGoogleAuthenticationData",
+  async (user: IRegGoogleData, thunkAPI) => {
+    try {
+      return await authService.registerWithGoogleAuthData(user)
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+)
+
 // Login User
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -77,7 +95,7 @@ export const passwordReset = createAsyncThunk(
     }
   }
 );
-// password reset
+// signinWithGoogle
 export const signupWithGoogle = createAsyncThunk(
   "auth/signupWithGoogle",
   async () => {
@@ -159,6 +177,30 @@ export const authSlice = createSlice({
         isSuccess: false
       });
     });
+
+    // Register Google data
+    builder.addCase(regGoogleAuthenticationData.pending, (state) => {
+      return (state = { ...state, isLoading: true })
+    })
+    builder.addCase(regGoogleAuthenticationData.fulfilled, (state,{ payload }) => {
+      return (state = {
+        ...state,
+        isLoading: false,
+        isSuccess: true,
+        user: payload
+      })
+    })
+    builder.addCase(regGoogleAuthenticationData.rejected, (state, { payload }) => {
+      return (state = {
+        ...state,
+        isLoading: false,
+        isError: true,
+        message: payload,
+        user: null, 
+        jwtTokenId: null,
+        isSuccess: false
+      })
+    })
 
     // Login User
     builder.addCase(loginUser.pending, (state) => {

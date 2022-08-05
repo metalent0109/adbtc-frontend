@@ -112,6 +112,7 @@ const Login: VFC = () => {
   useEffect(() => {
     if (isError) {
       setSubmitError(message.error)
+      return
     }
 
     if (isSuccess || user) {

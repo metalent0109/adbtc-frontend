@@ -38,7 +38,16 @@ const signInWithGoogle = async () => {
         email: user.email
       });
     }
-    localStorage.setItem("jwtToken", JSON.stringify(user.uid))
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName,
+      surfingBalance: 0,
+      advertisingBalance: 0
+    }
+    console.log("this is from signinwithgoogle", data)
+    return data
+    // localStorage.setItem("jwtToken", JSON.stringify(user.uid))
   } catch (error) {
     console.error(error);
   }
@@ -80,7 +89,7 @@ const sendPasswordReset = async (email: any) => {
   }
 };
 
-const logoutUser = () => {
+const logoutGoogleUser = () => {
   signOut(auth);
 };
 
@@ -91,5 +100,5 @@ export {
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
-  logoutUser
+  logoutGoogleUser
 };
