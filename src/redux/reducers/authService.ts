@@ -1,4 +1,4 @@
-import { ICreateUser, ILoginUser } from "modules/types/user";
+import { ICreateUser, ILoginUser, IRegGoogleData } from "modules/types/user";
 import jwt_decode from "jwt-decode";
 import api from "api/api";
 
@@ -42,6 +42,23 @@ const register = async (userData: ICreateUser) => {
   // } else {
   //   return response.data.error;
   // }
+};
+
+// Register with Google Auth Data
+const registerWithGoogleAuthData = async (userData: IRegGoogleData) => {
+  await api
+    .post("regWithGoggleAuth", userData)
+    .then((user) => {
+      localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
+      let decoded: any = jwt_decode(JSON.stringify(user.data.token));
+      console.log(decoded);
+      localStorage.setItem("jwtTokenId", decoded.id.id);
+      return user.data.token;
+    })
+    .catch((error) => {
+      console.log(error.response.data.error);
+      return error.response.data.error;
+    });
 };
 
 // Login User
@@ -90,6 +107,7 @@ const authService = {
   getMe,
   getAll,
   register,
+  registerWithGoogleAuthData,
   login,
   reset,
   regWithGoogle,
