@@ -23,7 +23,7 @@ const Header: VFC = () => {
   const userStorage = localStorage.getItem("jwtToken")
   const [user] = useAuthState(auth)
   const { isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
-const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>()
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 

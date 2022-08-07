@@ -4,14 +4,22 @@ import api from "api/api";
 
 // Get a User
 const getMe = async () => {
-  const id = localStorage.getItem("jwtTokenId");
-  const response = await api.get(`user/${id}`);
+  const token = JSON.parse(localStorage.getItem("jwtToken") || '{}');
+  const response = await api.get("user", {
+    headers: {
+      "authorization": `Bearer ${token}`
+    }
+  });
   return response.data;
 };
 // Get all Users
 const getAll = async () => {
-  const id = localStorage.getItem("jwtTokenId");
-  const response = await api.get(`users/${id}`);
+  const token = localStorage.getItem("jwtToken");
+  const response = await api.get("users", {
+    headers: {
+      "authorization": `Bearer ${token}`
+    }
+  });
   return response.data;
 };
 

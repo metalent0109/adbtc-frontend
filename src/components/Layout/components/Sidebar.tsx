@@ -23,12 +23,13 @@ interface Props {
   open: boolean
   handleClose: () => void
   menuList: Array<LinkMenu>
+  userData: any
 }
 
 const Sidebar: FC<Props> = (props) => {
   const classes = useStyles()
 
-  const { open, handleClose, menuList } = props
+  const { open, handleClose, menuList, userData } = props
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
@@ -45,7 +46,7 @@ const Sidebar: FC<Props> = (props) => {
       className={classes.drawer}
     >
       <Box>
-        <BalanceCard showUserId={true} />
+        <BalanceCard showUserId={true} userData={userData && userData} />
         <Box className={classes.btcToUsd} display="flex" alignItems="center">
           <Typography variant="body1">1 BTC = 20083 USD</Typography>
         </Box>

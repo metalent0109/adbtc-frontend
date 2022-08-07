@@ -13,6 +13,7 @@ interface state {
   isLoading: boolean;
   message: any;
   users: [];
+  userData: any
 }
 
 const initialState: state = {
@@ -22,7 +23,8 @@ const initialState: state = {
   isSuccess: false,
   isLoading: false,
   message: "",
-  users: []
+  users: [],
+  userData: null
 };
 
 // Register user
@@ -258,7 +260,7 @@ export const authSlice = createSlice({
           ...state,
           isLoading: false,
           isSuccess: true,
-          user: payload.token
+          userData: payload
         });
       });
       builder.addCase(getAUser.rejected, (state, { payload }) => {
@@ -267,7 +269,7 @@ export const authSlice = createSlice({
           isLoading: false,
           isError: true,
           message: payload,
-          user: null,
+          userData: null,
           isSuccess: false
         });
       });
