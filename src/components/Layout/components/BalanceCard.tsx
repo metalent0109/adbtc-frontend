@@ -20,11 +20,13 @@ const useStyles = makeStyles(styles)
 
 interface Props {
   showUserId: boolean
+  userData: any 
 }
+
 
 const BalanceCard: FC<Props> = (props) => {
 
-  const { showUserId } = props
+  const { showUserId, userData } = props
 
   const classes = useStyles()
 
@@ -58,7 +60,7 @@ const BalanceCard: FC<Props> = (props) => {
           Balance
         </Typography>
         <Typography variant='body1'>
-          0 satoshis &nbsp;
+          {userData && userData.user.surfingBalance} satoshis &nbsp;
           <Tooltip title='Withdraw' classes={{ popper: classes.tooltip }}>
             <Link href='/acc/balance' onClick={(e) => handleNavigate(e, '/acc/balance')}>
               <AccountBalanceWalletIcon />
@@ -86,7 +88,7 @@ const BalanceCard: FC<Props> = (props) => {
           Advertising balance
         </Typography>
         <Typography variant='body1'>
-          0 satoshis &nbsp;
+        {userData && userData.user.advertisingBalance} satoshis &nbsp;
           <Tooltip title='Deposit' classes={{ popper: classes.tooltip }}>
             <Link href='/' onClick={(e) => handleNavigate(e, '/deposit')}>
               <AddBoxIcon />

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { makeStyles } from '@mui/styles'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -37,7 +37,7 @@ import Sidebar from './components/Sidebar'
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "redux/store"
 import styles from 'assets/jss/components/adminLayoutStyles'
-import { logout } from 'redux/reducers/authSlice';
+import { getAUser, logout } from 'redux/reducers/authSlice';
 import { auth, logoutGoogleUser } from 'firebaseSetup'
 
 const useStyles = makeStyles(styles)
@@ -50,12 +50,18 @@ interface Props {
 const Layout: FC<Props> = (props) => {
   const classes = useStyles()
   const [user] = useAuthState(auth)
+  const { userData } = useSelector((state: RootState) => state.auth)
+  console.log("this is user data", userData)
 
   const { children, title } = props
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    dispatch(getAUser())
+  }, [dispatch])
 
   const menuList = [
     {
@@ -213,7 +219,7 @@ const Layout: FC<Props> = (props) => {
         <Typography variant="body1">adBTC</Typography>
         <Box ml="auto" mr={2}>
           <Typography variant="body1">
-            Balance: <b>0 satoshis</b>
+            Balance: <b>{userData && userData.user.surfingBalance} satoshis</b>
           </Typography>
         </Box>
       </Box>
@@ -228,7 +234,7 @@ const Layout: FC<Props> = (props) => {
                 <Typography variant="h6">↗ adBTC</Typography>
               </Box>
 
-              <BalanceCard showUserId={false} />
+              <BalanceCard showUserId={false} userData={userData && userData} />
 
               <Box className={classes.logoWrapper} my={1}>
                 <Typography variant="body1">1 BTC = 20295 USD</Typography>
@@ -278,6 +284,7 @@ const Layout: FC<Props> = (props) => {
         open={open}
         handleClose={() => setOpen(false)}
         menuList={menuList}
+        userData={userData && userData}
       />
     </Box>
   )
