@@ -51,7 +51,7 @@ const Layout: FC<Props> = (props) => {
   const classes = useStyles()
   const [user] = useAuthState(auth)
   const { userData } = useSelector((state: RootState) => state.auth)
-  console.log("this is user data", userData)
+  // console.log("this is user data", userData)
 
   const { children, title } = props
   const dispatch = useDispatch<AppDispatch>()

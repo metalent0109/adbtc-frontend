@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes  } from 'react-router-dom'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
@@ -83,6 +83,12 @@ import PrivateRoute from 'components/PrivateRoute';
 const theme = createTheme({})
 
 function App() {
+  const [timer, setTimer] = useState(0)
+
+  useEffect(() => {
+    document.title = timer > 0 ? `${timer}` : "BTC-CADS"
+  }, [timer])
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -95,7 +101,7 @@ function App() {
       
             <Fragment>
               <Route path="/index" element={<PrivateRoute page={<Dashboard />} />} />
-              <Route path="/surf/browse" element={<PrivateRoute page={<SurfBrowse />} />} />
+              <Route path="/surf/browse" element={<PrivateRoute page={<SurfBrowse setTimer={setTimer} />} />} />
               <Route path="/surfiat/browse" element={<PrivateRoute page={<SurfiatBrowse />} />} />
               <Route path="/video/inf" element={<PrivateRoute page={<VideoInf />} />} />
               <Route path="/surftab/inf" element={<PrivateRoute page={<SurftabInf />} />} />

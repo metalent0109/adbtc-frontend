@@ -5,7 +5,7 @@ import api from "api/api";
 // Get a User
 const getMe = async () => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || '{}');
-  const response = await api.get("user", {
+  const response = await api.get("user/user", {
     headers: {
       "authorization": `Bearer ${token}`
     }
@@ -15,7 +15,7 @@ const getMe = async () => {
 // Get all Users
 const getAll = async () => {
   const token = localStorage.getItem("jwtToken");
-  const response = await api.get("users", {
+  const response = await api.get("user/users", {
     headers: {
       "authorization": `Bearer ${token}`
     }
@@ -26,7 +26,7 @@ const getAll = async () => {
 // Register user
 const register = async (userData: ICreateUser) => {
   await api
-    .post("signup", userData)
+    .post("user/signup", userData)
     .then((user) => {
       localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
       let decoded: any = jwt_decode(JSON.stringify(user.data.token));
@@ -55,7 +55,7 @@ const register = async (userData: ICreateUser) => {
 // Register with Google Auth Data
 const registerWithGoogleAuthData = async (userData: IRegGoogleData) => {
   await api
-    .post("regWithGoggleAuth", userData)
+    .post("user/regWithGoggleAuth", userData)
     .then((user) => {
       localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
       let decoded: any = jwt_decode(JSON.stringify(user.data.token));
@@ -72,7 +72,7 @@ const registerWithGoogleAuthData = async (userData: IRegGoogleData) => {
 // Login User
 const login = async (userData: ILoginUser) => {
   await api
-    .post("login", userData)
+    .post("user/login", userData)
     .then((user) => {
       localStorage.setItem("jwtToken", JSON.stringify(user.data.token));
       let decoded: any = jwt_decode(JSON.stringify(user.data.token));
@@ -88,7 +88,7 @@ const login = async (userData: ILoginUser) => {
 
 // Reset password
 const reset = async (userData: string) => {
-  const response = await api.post("resetpassword", userData);
+  const response = await api.post("user/resetpassword", userData);
   console.log(response.data);
 
   return response.data;
@@ -96,7 +96,7 @@ const reset = async (userData: string) => {
 
 // Register with google
 const regWithGoogle = async () => {
-  const response = await api.post("registerWithGoogle");
+  const response = await api.post("user/registerWithGoogle");
   console.log(response.data);
   if (response.data) {
     localStorage.setItem("jwtToken", JSON.stringify(response.data.token));
