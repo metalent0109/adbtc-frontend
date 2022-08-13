@@ -70,9 +70,9 @@ export const getAdsCreatedByMe = createAsyncThunk(
 // Surf ads
 export const surfAdvert = createAsyncThunk(
   "ads/surfAdvert",
-  async (url: string, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
-      return await adsService.surfAds(url);
+      return await adsService.surfAds(id);
     } catch (error: any) {
       const message =
         (error.response &&

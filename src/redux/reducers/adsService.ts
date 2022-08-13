@@ -44,10 +44,10 @@ const getMyAds = async () => {
 };
 
 // Surf ads
-const surfAds = async (url: string) => {
+const surfAds = async (id: string) => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
   await api
-    .post("ads/surfAds", url, {
+    .get(`ads/surfAds/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
       }

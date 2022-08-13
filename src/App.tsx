@@ -1,11 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes  } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'redux/store'
+import { getAllAdvert, surfAdvert } from 'redux/reducers/adsSlice'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from "react-redux"
-import { RootState } from "redux/store"
 
 import LandingPage from 'views/LandingPage'
 import Login from 'views/Login'
@@ -15,6 +16,7 @@ import ForgotPassword from 'views/ForgotPassword'
 // pages of Earn
 import Dashboard from 'views/Dashboard'
 import SurfBrowse from 'views/SurfBrowse'
+import SurfBrowseDetail from 'views/SurfBrowseDetail'
 import SurfiatBrowse from 'views/SurfiatBrowse'
 import VideoInf from 'views/VideoInf'
 import SurftabInf from 'views/SurftabInf'
@@ -79,11 +81,28 @@ import SurfAbuse from 'views/SurfAbuse'
 import IndexEarn from 'views/IndexEarn'
 import SurfTopup from 'views/SurfTopup'
 import PrivateRoute from 'components/PrivateRoute';
+import { getAUser } from 'redux/reducers/authSlice'
 
 const theme = createTheme({})
 
 function App() {
+  const { ads } = useSelector((state: RootState) => state.ads)
+  const { userData } = useSelector((state: RootState) => state.auth)
+  console.log(ads)
   const [timer, setTimer] = useState(0)
+  const dispatch = useDispatch<AppDispatch>()
+
+  const skipAds = () => {
+    dispatch(getAllAdvert())
+  }
+
+  const getMe = () => {
+    dispatch(getAUser())
+  }
+
+  useEffect(() => {
+    dispatch(getAllAdvert())
+  }, [dispatch])
 
   useEffect(() => {
     document.title = timer > 0 ? `${timer}` : "BTC-CADS"
@@ -101,7 +120,8 @@ function App() {
       
             <Fragment>
               <Route path="/index" element={<PrivateRoute page={<Dashboard />} />} />
-              <Route path="/surf/browse" element={<PrivateRoute page={<SurfBrowse setTimer={setTimer} />} />} />
+              <Route path="/surf/browse" element={<PrivateRoute page={<SurfBrowse ads={ads} />} />} />
+              <Route path="/surf/browse/:id" element={<PrivateRoute page={<SurfBrowseDetail ads={ads} skipAds={skipAds} setTimer={setTimer} />} />} />
               <Route path="/surfiat/browse" element={<PrivateRoute page={<SurfiatBrowse />} />} />
               <Route path="/video/inf" element={<PrivateRoute page={<VideoInf />} />} />
               <Route path="/surftab/inf" element={<PrivateRoute page={<SurftabInf />} />} />
