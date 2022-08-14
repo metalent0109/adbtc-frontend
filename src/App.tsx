@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react'
 import { BrowserRouter, Route, Routes  } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'redux/store'
-import { getAllAdvert, surfAdvert } from 'redux/reducers/adsSlice'
+import { getAdsCreatedByMe, getAllAdvert, surfAdvert } from 'redux/reducers/adsSlice'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { ToastContainer } from 'react-toastify';
@@ -88,7 +88,7 @@ const theme = createTheme({})
 function App() {
   const { ads } = useSelector((state: RootState) => state.ads)
   const { userData } = useSelector((state: RootState) => state.auth)
-  console.log(userData)
+  console.log(ads)
   const [timer, setTimer] = useState(0)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -98,6 +98,10 @@ function App() {
 
   const getMe = () => {
     dispatch(getAUser())
+  }
+
+  const getAdvertsCreatedByMe = () => {
+    dispatch(getAdsCreatedByMe())
   }
 
   useEffect(() => {
