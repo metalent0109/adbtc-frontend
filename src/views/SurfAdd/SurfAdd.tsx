@@ -19,7 +19,7 @@ import CustomButton from 'components/CustomButton'
 import CustomSelect from 'components/CustomSelect'
 
 import { countries } from 'assets/const/countries'
-import { createAd } from 'redux/reducers/adsSlice'
+import { createAd, reset } from 'redux/reducers/adsSlice'
 
 const SurfAdd: FC = () => {
   const { isCreated } = useSelector((state: RootState) => state.ads)
@@ -37,12 +37,12 @@ const SurfAdd: FC = () => {
   const [isRated18, setIsRated18] = useState(false)
   const [countriesInfo, setCountriesInfo] = useState<any>({
     selectedCountries: [],
-    response: []
+    response: [],
   })
   const [errors, setErrors] = useState('')
 
   // console.log(countriesInfo.response)
-  console.log("is rated 18", isRated18)
+  console.log('is rated 18', isRated18)
 
   const data = {
     url,
@@ -50,10 +50,10 @@ const SurfAdd: FC = () => {
     basePrice,
     rating,
     lang,
-    device, 
+    device,
     countries: countriesInfo.response,
     viewDuration,
-    rated: isRated18 ? '18+' : '18-'
+    rated: isRated18 ? '18+' : '18-',
   }
   console.log('the data', data)
 
@@ -66,19 +66,21 @@ const SurfAdd: FC = () => {
     if (checked) {
       setCountriesInfo({
         selectedCountries: [...selectedCountries, value],
-        response: [...selectedCountries, value]
+        response: [...selectedCountries, value],
       })
     } else {
       setCountriesInfo({
-        selectedCountries: selectedCountries.filter((event: any) => event !== value),
-        response: selectedCountries.filter((event: any) => event !== value)
+        selectedCountries: selectedCountries.filter(
+          (event: any) => event !== value,
+        ),
+        response: selectedCountries.filter((event: any) => event !== value),
       })
     }
   }
 
-  const handleIsRated18 = (event: React.ChangeEvent<HTMLInputElement>,) => {
+  const handleIsRated18 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target
-    
+
     if (checked) {
       setIsRated18(true)
     } else {
@@ -99,6 +101,16 @@ const SurfAdd: FC = () => {
       setErrors('Please all fields are required')
       return
     }
+
+    if (
+      Number(viewDuration) !== 15 &&
+      Number(viewDuration) !== 30 &&
+      Number(viewDuration) !== 40 &&
+      Number(viewDuration) !== 60
+    ) {
+      setErrors('please view duration must be either 15, 30, 40 or 60')
+      return
+    }
     const adsData = {
       url,
       description,
@@ -117,7 +129,9 @@ const SurfAdd: FC = () => {
     if (isCreated) {
       setSuccess(true)
     }
-  }, [isCreated])
+
+    dispatch(reset())
+  }, [isCreated, dispatch])
 
   return (
     <Layout title="New Surfing Ad">
@@ -167,13 +181,15 @@ const SurfAdd: FC = () => {
           </Typography>
           <Divider sx={{ margin: '1rem 0' }} />
           <Grid container spacing={3}>
-            <Box mb={2}>
+            <Box mb={2} mt={2}>
               {errors && (
                 <span
                   style={{
                     color: 'red',
                     fontStyle: 'italic',
                     marginBottom: '20px',
+                    marginTop: '10px',
+                    marginLeft: '20px',
                   }}
                 >
                   {errors}
@@ -325,7 +341,8 @@ const SurfAdd: FC = () => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          onChange={handleCountriesChange} value={country.text}
+                          onChange={handleCountriesChange}
+                          value={country.text}
                           checkedIcon={<DoneIcon sx={{ color: '#26a69a' }} />}
                         />
                       }
@@ -341,7 +358,9 @@ const SurfAdd: FC = () => {
             <Grid item xs={12}>
               <FormControlLabel
                 control={
-                  <Checkbox onChange={handleIsRated18} value={isRated18}
+                  <Checkbox
+                    onChange={handleIsRated18}
+                    value={isRated18}
                     checkedIcon={<DoneIcon sx={{ color: '#26a69a' }} />}
                   />
                 }
