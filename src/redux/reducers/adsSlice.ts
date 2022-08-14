@@ -8,6 +8,7 @@ interface state {
   isSuccess: boolean;
   isLoading: boolean;
   message: any;
+  isCreated: any
 }
 
 const initialState: state = {
@@ -15,6 +16,7 @@ const initialState: state = {
   isError: false,
   isSuccess: false,
   isLoading: false,
+  isCreated: false,
   message: ""
 };
 
@@ -123,7 +125,7 @@ export const adsSlice = createSlice({
       return (state = {
         ...state,
         isLoading: false,
-        isSuccess: true,
+        isCreated: true,
         ads: payload
       });
     });
