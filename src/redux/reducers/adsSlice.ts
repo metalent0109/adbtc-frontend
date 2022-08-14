@@ -8,7 +8,8 @@ interface state {
   isSuccess: boolean;
   isLoading: boolean;
   message: any;
-  isCreated: any
+  isCreated: any;
+  myAds: any
 }
 
 const initialState: state = {
@@ -17,8 +18,9 @@ const initialState: state = {
   isSuccess: false,
   isLoading: false,
   isCreated: false,
-  message: ""
-};
+  message: "",
+  myAds: null
+}
 
 // Create an Ad
 export const createAd = createAsyncThunk(
@@ -172,7 +174,7 @@ export const adsSlice = createSlice({
         ...state,
         isLoading: false,
         isSuccess: true,
-        ads: payload
+        myAds: payload
       });
     });
     builder.addCase(getAdsCreatedByMe.rejected, (state, { payload }) => {
@@ -181,7 +183,7 @@ export const adsSlice = createSlice({
         isLoading: false,
         isError: true,
         message: payload,
-        ads: null,
+        myAds: null,
         isSuccess: false
       });
     });

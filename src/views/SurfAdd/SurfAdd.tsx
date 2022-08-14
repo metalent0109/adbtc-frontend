@@ -21,8 +21,10 @@ import CustomSelect from 'components/CustomSelect'
 import { countries } from 'assets/const/countries'
 import { createAd, reset } from 'redux/reducers/adsSlice'
 
-const SurfAdd: FC = () => {
-  const { isCreated } = useSelector((state: RootState) => state.ads)
+const SurfAdd: FC = (props) => {
+  const { isCreated, isError, message } = useSelector(
+    (state: RootState) => state.ads,
+  )
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
@@ -40,22 +42,7 @@ const SurfAdd: FC = () => {
     response: [],
   })
   const [errors, setErrors] = useState('')
-
-  // console.log(countriesInfo.response)
-  console.log('is rated 18', isRated18)
-
-  const data = {
-    url,
-    description,
-    basePrice,
-    rating,
-    lang,
-    device,
-    countries: countriesInfo.response,
-    viewDuration,
-    rated: isRated18 ? '18+' : '18-',
-  }
-  console.log('the data', data)
+  const [submitError, setSubmitError] = useState('')
 
   const handleCountriesChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -126,12 +113,17 @@ const SurfAdd: FC = () => {
   }
 
   useEffect(() => {
+    if (isError) {
+      setSubmitError(message.error)
+      return
+    }
+
     if (isCreated) {
       setSuccess(true)
     }
 
     dispatch(reset())
-  }, [isCreated, dispatch])
+  }, [isCreated, isError, message, dispatch])
 
   return (
     <Layout title="New Surfing Ad">
@@ -181,6 +173,21 @@ const SurfAdd: FC = () => {
           </Typography>
           <Divider sx={{ margin: '1rem 0' }} />
           <Grid container spacing={3}>
+            <Box mb={2} mt={2}>
+              {submitError && (
+                <span
+                  style={{
+                    color: 'red',
+                    fontStyle: 'italic',
+                    marginBottom: '20px',
+                    marginTop: '10px',
+                    marginLeft: '20px',
+                  }}
+                >
+                  {submitError}
+                </span>
+              )}
+            </Box>
             <Box mb={2} mt={2}>
               {errors && (
                 <span
