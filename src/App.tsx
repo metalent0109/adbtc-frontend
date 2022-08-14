@@ -88,7 +88,7 @@ const theme = createTheme({})
 function App() {
   const { ads } = useSelector((state: RootState) => state.ads)
   const { userData } = useSelector((state: RootState) => state.auth)
-  console.log(ads)
+  console.log(userData)
   const [timer, setTimer] = useState(0)
   const dispatch = useDispatch<AppDispatch>()
 

@@ -1,8 +1,8 @@
 export interface ICreateAds {
   url: string;
   description: string;
-  basePrice: number;
-  viewDuration: number;
+  basePrice: number | string;
+  viewDuration: number | string;
   minRatingToViewAd: string;
   deviceToShowAd: string;
   geoTargeting: [string];

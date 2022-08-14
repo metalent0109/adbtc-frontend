@@ -62,7 +62,7 @@ const SurfBrowseDetail: FC<Props> = (props) => {
     
     var currentDate = new Date();
         var timeToSurf = currentDate.setSeconds(
-          currentDate.getSeconds() + props.ads.viewDuration
+          currentDate.getSeconds() + props.ads.viewDuration + 8
         );
         var deadline = new Date(timeToSurf).getTime();
         var x = setInterval(function() {
@@ -74,7 +74,7 @@ const SurfBrowseDetail: FC<Props> = (props) => {
           if (t < 0) {
             clearInterval(x);
             console.log("time elapsed");
-            
+            dispatch(getAUser())
           }
         }, 1000)
 
