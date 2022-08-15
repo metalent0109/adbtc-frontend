@@ -1,8 +1,9 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'redux/store'
 import { makeStyles } from '@mui/styles'
+import api from 'api/api'
 
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
@@ -31,11 +32,13 @@ import { CustomCard } from 'components/CustomCard/CustomCard'
 
 import styles from 'assets/jss/components/tablesStyles'
 import { getAdsCreatedByMe } from 'redux/reducers/adsSlice'
+import { toast } from 'react-toastify'
 
 const useStyles = makeStyles(styles)
 
 const SurfProjects: FC = (props) => {
   const { myAds } = useSelector((state: RootState) => state.ads)
+  const [successMsg, setSuccessMsg] = useState(null)
   const dispatch = useDispatch<AppDispatch>()
   console.log('this is my ads', myAds)
 
@@ -68,9 +71,32 @@ const SurfProjects: FC = (props) => {
     },
   ]
 
+  const deleteAdvert = async (id: string, url: string) => {
+    const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+    alert(`Are you sure to delete this ads with advertisement ${url}`)
+    await api
+    .delete(`ads/deleteAds/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then((deletdAd) => {
+      console.log("ads deleted")
+      setSuccessMsg(deletdAd.data.message);
+    })
+    .catch((error) => {
+      console.log(error.response.data.error);
+      return error.response.data.error;
+    });
+  }
+
   useEffect(() => {
     dispatch(getAdsCreatedByMe())
-  }, [dispatch])
+    if (successMsg) {
+      toast.success(successMsg)
+      navigate('/surf/projects?created=true')
+    }
+  }, [dispatch, successMsg, navigate])
 
   return (
     <Layout title={created ? 'Your surfing ads' : 'There is no ads yet'}>
@@ -169,7 +195,7 @@ const SurfProjects: FC = (props) => {
                       <IconButton onClick={() => navigate(`/surf/${ad._id}`)}>
                         <EqualizerIcon sx={{ color: '#2196F3' }} />
                       </IconButton>
-                      <IconButton>
+                      <IconButton onClick={() => {deleteAdvert(ad._id, ad.url)}}>
                         <DeleteIcon sx={{ color: '#F44336' }} />
                       </IconButton>
                     </TableCell>
