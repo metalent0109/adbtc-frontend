@@ -62,10 +62,10 @@ const surfAds = async (id: string) => {
 };
 
 // Deposit satoshi
-const depositSatoshi = async (amount: number) => {
+const depositSatoshi = async (id: string) => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
   await api
-    .post("ads/depositSatoshi", amount, {
+    .get(`ads/depositSatoshi/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
       }
