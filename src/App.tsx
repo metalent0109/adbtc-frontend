@@ -191,7 +191,7 @@ function App() {
               <Route path="/payeer/fund" element={<PrivateRoute page={<PayeerFund />} />} />
               <Route path="/surf/abuse" element={<PrivateRoute page={<SurfAbuse />} />} />
               <Route path="/index/earn" element={<PrivateRoute page={<IndexEarn />} />} />
-              <Route path="/surf/topup" element={<PrivateRoute page={<SurfTopup />} />} />
+              <Route path="/surf/topup/:id" element={<PrivateRoute page={<SurfTopup />} />} />
             </Fragment>
       
         </Routes>

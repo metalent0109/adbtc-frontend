@@ -10,6 +10,7 @@ interface state {
   message: any;
   isCreated: any;
   myAds: any
+  depSuccess: boolean
 }
 
 const initialState: state = {
@@ -19,7 +20,8 @@ const initialState: state = {
   isLoading: false,
   isCreated: false,
   message: "",
-  myAds: null
+  myAds: null,
+  depSuccess: false
 }
 
 // Create an Ad
@@ -92,9 +94,9 @@ export const surfAdvert = createAsyncThunk(
 // Deposit ads
 export const depSatoshi = createAsyncThunk(
   "ads/depSatoshi",
-  async (amount: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
-      return await adsService.depositSatoshi(amount);
+      return await adsService.depositSatoshi(id);
     } catch (error: any) {
       const message =
         (error.response &&
@@ -219,7 +221,7 @@ export const adsSlice = createSlice({
       return (state = {
         ...state,
         isLoading: false,
-        isSuccess: true,
+        depSuccess: true,
         message: payload
       });
     });
@@ -229,7 +231,7 @@ export const adsSlice = createSlice({
         isLoading: false,
         isError: true,
         message: payload,
-        isSuccess: false
+        depSuccess: false
       });
     });
   }

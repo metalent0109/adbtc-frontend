@@ -147,7 +147,7 @@ const SurfProjects: FC = (props) => {
                         <Link
                           component="button"
                           underline="none"
-                          onClick={() => navigate('/surf/topup')}
+                          onClick={() => navigate(`/surf/topup/${ad._id}`)}
                         >
                           Please add funds here
                         </Link>
