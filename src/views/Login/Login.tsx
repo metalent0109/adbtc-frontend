@@ -1,8 +1,6 @@
 import React, { VFC, useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha'
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from '@mui/styles'
 
@@ -25,7 +23,7 @@ import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
 import { validateForm, validEmailRegex } from 'utils/utility'
-import { loginUser, reset } from 'redux/reducers/authSlice'
+import  useAuth  from 'hooks/useAuth'
 import Spinner from 'components/Spinner'
 
 const useStyles = makeStyles(styles)
@@ -44,22 +42,20 @@ const Login: VFC = () => {
   const [loginInput, setLoginInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
-  const { user, isError, isSuccess, message, isLoading } = useSelector((state: RootState) => state.auth)
-  const dispatch = useDispatch<AppDispatch>()
+  const [captcha, setCaptcha] = useState('reCaptcha')
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  const { user, isError, isSuccess, message, isLoading, loginUser, reset} = useAuth()
 
   const classes = useStyles()
-
   const navigate = useNavigate()
 
-  const [captcha, setCaptcha] = useState('reCaptcha')
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-
   
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -102,10 +98,10 @@ const Login: VFC = () => {
         email: loginInput.email,
         password: loginInput.password
       }
-      dispatch(loginUser(data))
+      loginUser(data);
       return
     } else {
-      console.log('Invalid form')
+      // console.log('Invalid form')
     }
   }
 
@@ -115,12 +111,13 @@ const Login: VFC = () => {
       return
     }
 
-    if (isSuccess || user) {
+    const token = localStorage.getItem("jwtTokenId")
+    if ( token ) {
       navigate('/index')
     }
-
-    dispatch(reset())
-  }, [user, isError, message, isSuccess, dispatch, navigate])
+    
+    reset()
+  }, [user, isError, message, isSuccess, navigate])
 
   return (
     <Box>

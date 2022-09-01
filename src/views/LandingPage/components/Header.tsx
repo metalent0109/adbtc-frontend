@@ -2,8 +2,6 @@ import React, { VFC, useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from '@mui/styles'
 
@@ -15,20 +13,21 @@ import Button from '@mui/material/Button'
 import styles from 'assets/jss/pages/homeStyles'
 import { auth, signInWithGoogle } from '../../../firebaseSetup'
 import { toast } from 'react-toastify'
-import { regGoogleAuthenticationData } from 'redux/reducers/authSlice'
+import useAds from 'hooks/useAds'
+import useAuth from 'hooks/useAuth'
+
 
 const useStyles = makeStyles(styles)
 
 const Header: VFC = () => {
   const userStorage = localStorage.getItem("jwtToken")
   const [user] = useAuthState(auth)
-  const { isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
-  const dispatch = useDispatch<AppDispatch>()
-
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  const classes = useStyles()
+  const { isError, isSuccess, message } = useAds()
+  const { regGoogleAuthenticationData } = useAuth()
 
+  const classes = useStyles()
   const navigate = useNavigate()
 
   const signUpWithGoogle = () => {
@@ -49,10 +48,10 @@ const Header: VFC = () => {
         advertisingBalance: "0"
       }
       console.log("user with useAthState", data)
-      dispatch(regGoogleAuthenticationData(data))
+      // regGoogleAuthenticationData(data)
       setIsLoggedIn(true)
     }
-  }, [user, isError, message, dispatch])
+  }, [user, isError, message])
 
   return (
     <Box className={classes.headerSection}>

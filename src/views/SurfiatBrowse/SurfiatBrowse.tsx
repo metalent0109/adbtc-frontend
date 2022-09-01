@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from "@mui/styles";
 
@@ -24,6 +24,13 @@ const SurfiatBrowse: FC = () => {
   const [typeValue, setTypeValue] = useState('surfing for satoshis')
   const [captcha, setCaptcha] = useState('Mathematical expression')
   const [step, setStep] = useState(0)
+
+  useEffect(() => {
+    const  user = localStorage.getItem("jwtToken")
+    if (user) {
+      navigate("/surfiat/browse")
+    }
+  }, [navigate])
 
   return (
     <Layout title={step === 0 ? 'The mathematicаl expression result' : 'Get Bitcoin for viewing websites'}>

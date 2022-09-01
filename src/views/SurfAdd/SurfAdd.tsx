@@ -1,7 +1,5 @@
 import React, { FC, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'redux/store'
 
 import DoneIcon from '@mui/icons-material/Done'
 
@@ -19,15 +17,11 @@ import CustomButton from 'components/CustomButton'
 import CustomSelect from 'components/CustomSelect'
 
 import { countries } from 'assets/const/countries'
-import { createAd, reset } from 'redux/reducers/adsSlice'
+import useAds from 'hooks/useAds'
 
 const SurfAdd: FC = (props) => {
-  const { isCreated, isError, message } = useSelector(
-    (state: RootState) => state.ads,
-  )
-  const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
-
+  const { isCreated, isError, message, createAd, reset } = useAds()
+  
   const [url, setUrl] = useState('https://')
   const [description, setDescription] = useState('')
   const [basePrice, setBasePrice] = useState<number | string>(4)
@@ -43,7 +37,9 @@ const SurfAdd: FC = (props) => {
   })
   const [errors, setErrors] = useState('')
   const [submitError, setSubmitError] = useState('')
-
+  
+  const navigate = useNavigate()
+  
   const handleCountriesChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -98,6 +94,11 @@ const SurfAdd: FC = (props) => {
       setErrors('please view duration must be either 15, 30, 40 or 60')
       return
     }
+    
+    if(description.length > 100) {
+      setErrors('please description length must be less than 100')
+    }
+
     const adsData = {
       url,
       description,
@@ -108,8 +109,7 @@ const SurfAdd: FC = (props) => {
       geoTargeting: countriesInfo.selectedCountries,
       rated: isRated18 ? '18+' : '18-',
     }
-
-    dispatch(createAd(adsData))
+    createAd(adsData)
   }
 
   useEffect(() => {
@@ -122,8 +122,8 @@ const SurfAdd: FC = (props) => {
       setSuccess(true)
     }
 
-    dispatch(reset())
-  }, [isCreated, isError, message, dispatch])
+    reset()
+  }, [isCreated, isError, message])
 
   return (
     <Layout title="New Surfing Ad">

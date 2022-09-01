@@ -19,16 +19,7 @@ const useStyles = makeStyles(styles)
 
 const Dashboard: FC = () => {
 
-  const navigate = useNavigate()
-
   const classes = useStyles()
-
-  useEffect(() => {
-    const  user = localStorage.getItem("jwtToken")
-    if (user) {
-      navigate("/index")
-    }
-  }, [navigate])
 
   return (
     <Layout title="adBTC">

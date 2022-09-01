@@ -13,15 +13,13 @@ import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "redux/store"
 
 import { LinkMenu } from 'typings'
 
 import styles from 'assets/jss/components/adminLayoutStyles'
 import { auth } from 'firebaseSetup';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { logout } from 'redux/reducers/authSlice';
+import  useAuth  from 'hooks/useAuth'
 
 const useStyles = makeStyles(styles)
 
@@ -33,8 +31,7 @@ interface Props {
 const MenuCollapse: FC<Props> = (props) => {
   const { menu, isSidebar } = props
   // const [user] = useAuthState(auth)
-  const { user } = useSelector((state: RootState) => state.auth)
-  const dispatch = useDispatch<AppDispatch>()
+  const { user, logout } = useAuth();
 
   const classes = useStyles()
   const navigate = useNavigate()
@@ -43,15 +40,16 @@ const MenuCollapse: FC<Props> = (props) => {
   const [expanded, setExpanded] = useState(true)
 
   const logoutUser = () => {
-    dispatch(logout())
+    logout()
     navigate('/login')
   }
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate('/login')
-  //   }
-  // }, [user, navigate])
+  useEffect(() => {
+    const user = localStorage.getItem("jwtToken");
+    if (!user) {
+      navigate('/login')
+    }
+  }, [user, navigate])
 
   return (
     <Box className={clsx(classes.collpaseMenu, { [classes.sidebarCollpase]: isSidebar, [classes.noTitle]: !menu.title })} mb={1}>
@@ -76,7 +74,24 @@ const MenuCollapse: FC<Props> = (props) => {
         <MenuList className={clsx(classes.menuList, {[classes.collpaseMenuList]: isSidebar})}>
           {
             menu.children.map((linkItem) => (
-              <MenuItem
+                linkItem.link == '/surf/browse' || linkItem.link == '/surf/projects'?
+                <MenuItem
+                  className={clsx({ [classes.activedMenu]: location.pathname === linkItem.link })}
+                  key={`${menu.id}-${linkItem.title}`}
+                  onClick={() => {
+                    if (linkItem.target) {
+                      window.open(linkItem.link, '_blank')
+                    } else {
+                      navigate(linkItem.link)
+                    }                  
+                  }}
+                >
+                  <ListItemText>{linkItem.title}</ListItemText>
+                  <ListItemIcon>
+                    {linkItem.icon}
+                  </ListItemIcon>
+                </MenuItem> :
+                <MenuItem
                 className={clsx({ [classes.activedMenu]: location.pathname === linkItem.link })}
                 key={`${menu.id}-${linkItem.title}`}
                 onClick={() => {
@@ -86,6 +101,7 @@ const MenuCollapse: FC<Props> = (props) => {
                     navigate(linkItem.link)
                   }                  
                 }}
+                disabled
               >
                 <ListItemText>{linkItem.title}</ListItemText>
                 <ListItemIcon>

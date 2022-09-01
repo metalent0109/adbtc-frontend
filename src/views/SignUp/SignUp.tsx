@@ -1,8 +1,6 @@
 import React, { VFC, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha'
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from '@mui/styles'
 
@@ -25,7 +23,8 @@ import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
 import { validateForm, validEmailRegex } from 'utils/utility'
-import { registerUser, reset } from 'redux/reducers/authSlice'
+import  useAuth  from 'hooks/useAuth'
+
 
 const useStyles = makeStyles(styles)
 
@@ -45,20 +44,20 @@ const SignUp: VFC = () => {
   const [registerInput, setRegisterInput] = useState(initialState)
   const [errors, setErrors] = useState(initialErrors)
   const [submitError, setSubmitError] = useState('')
-  const { user, isError, isSuccess, message } = useSelector((state: RootState) => state.auth)
-  const dispatch = useDispatch<AppDispatch>()
+  const [captcha, setCaptcha] = useState('reCaptcha')
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  const { user, isError, isSuccess, message, registerUser, reset } = useAuth();
 
   const classes = useStyles()
-
   const navigate = useNavigate()
 
-  const [captcha, setCaptcha] = useState('reCaptcha')
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
+  
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
+  
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -110,7 +109,8 @@ const SignUp: VFC = () => {
         email: registerInput.email,
         password: registerInput.password,
       }
-      dispatch(registerUser(data))
+      const register = await registerUser(data)
+      // console.log("registeruser:", register);
     } else {
       console.log('Invalid form')
     }
@@ -121,13 +121,14 @@ const SignUp: VFC = () => {
       setSubmitError(message.error)
       return
     }
-
-    if (isSuccess || user) {
+    
+    const token = localStorage.getItem("jwtTokenId")
+    if (token) {
       navigate('/index')
     }
 
-    dispatch(reset())
-  }, [user, isError, message, isSuccess, dispatch, registerInput, navigate])
+    reset()
+  }, [user, isError, message, isSuccess, registerInput, navigate])
 
   return (
     <Box>

@@ -1,9 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'redux/store'
 import { makeStyles } from '@mui/styles'
-import api from 'api/api'
+import axios from 'services/api/axios'
 
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
@@ -19,6 +17,7 @@ import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
 
 import PauseIcon from '@mui/icons-material/Pause'
+import PlayArrow from '@mui/icons-material/PlayArrow'
 import DeleteIcon from '@mui/icons-material/Delete'
 import RestoreIcon from '@mui/icons-material/Restore'
 import PhonelinkIcon from '@mui/icons-material/Phonelink'
@@ -31,22 +30,24 @@ import CustomButton from 'components/CustomButton'
 import { CustomCard } from 'components/CustomCard/CustomCard'
 
 import styles from 'assets/jss/components/tablesStyles'
-import { getAdsCreatedByMe } from 'redux/reducers/adsSlice'
+import useAds from 'hooks/useAds'
+import useAuth from 'hooks/useAuth'
 import { toast } from 'react-toastify'
+import { Tooltip } from '@mui/material'
+import { updateImportClause } from 'typescript'
 
 const useStyles = makeStyles(styles)
 
 const SurfProjects: FC = (props) => {
-  const { myAds } = useSelector((state: RootState) => state.ads)
+  const { myAds, isLoading, getAdsCreatedByMe } = useAds();
+
   const [successMsg, setSuccessMsg] = useState(null)
-  const dispatch = useDispatch<AppDispatch>()
-  console.log('this is my ads', myAds)
+  // console.log('this is my ads', myAds)
 
   const navigate = useNavigate()
   const classes = useStyles()
 
-  const urlParams = new URLSearchParams(window.location.search)
-  const created = urlParams.get('created')
+  const created = myAds.length > 0 ? true : false;
 
   const rows = [
     {
@@ -74,15 +75,30 @@ const SurfProjects: FC = (props) => {
   const deleteAdvert = async (id: string, url: string) => {
     const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
     alert(`Are you sure to delete this ads with advertisement ${url}`)
-    await api
+    await axios
     .delete(`ads/deleteAds/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
       }
     })
     .then((deletdAd) => {
-      console.log("ads deleted")
       setSuccessMsg(deletdAd.data.message);
+    })
+    .catch((error) => {
+      return error.response.data.error;
+    });
+  }
+
+  const updateAdStatus = async (id: string) => {
+    const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+    await axios
+    .put(`ads/updateAdStatus/${id}`,{}, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then((updateAdStatus) => {
+      setSuccessMsg(updateAdStatus.data.message);
     })
     .catch((error) => {
       console.log(error.response.data.error);
@@ -91,14 +107,15 @@ const SurfProjects: FC = (props) => {
   }
 
   useEffect(() => {
-    dispatch(getAdsCreatedByMe())
+    getAdsCreatedByMe()
     if (successMsg) {
-      toast.success(successMsg)
-      navigate('/surf/projects?created=true')
+      setSuccessMsg(null);
+      navigate('/surf/projects')
     }
-  }, [dispatch, successMsg, navigate])
+  }, [successMsg, navigate])
 
   return (
+    isLoading ? 
     <Layout title={created ? 'Your surfing ads' : 'There is no ads yet'}>
       <Typography
         variant="body1"
@@ -180,23 +197,42 @@ const SurfProjects: FC = (props) => {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton>
-                        <PauseIcon sx={{ color: '#ff9800' }} />
+                      <IconButton onClick={() => updateAdStatus(ad._id)}>
+                        {
+                          ad.isPause ?
+                          <Tooltip title='Pause ad'>
+                            <PlayArrow sx={{ color: '#2896F3' }} />
+                          </Tooltip> :
+                          <Tooltip title='Resume ad'>
+                            <PauseIcon sx={{ color: '#ff9800' }} />
+                          </Tooltip>
+                        }
+                        
                       </IconButton>
-                      <IconButton onClick={() => navigate('/surf/edit')}>
-                        <EditIcon sx={{ color: '#cddc39' }} />
+                      <IconButton onClick={() => navigate(`/surf/edit/${ad._id}`)}>
+                        <Tooltip title='Edit ad'>
+                          <EditIcon sx={{ color: '#cddc39' }} />
+                        </Tooltip>
                       </IconButton>
                       <IconButton>
-                        <RestoreIcon sx={{ color: '#000' }} />
+                        <Tooltip title='Daily limit'>
+                          <RestoreIcon sx={{ color: '#000' }} />
+                        </Tooltip>
                       </IconButton>
                       <IconButton onClick={() => navigate('/surf/geo')}>
-                        <LanguageIcon sx={{ color: '#000' }} />
+                        <Tooltip title='Geotargeting'>
+                          <LanguageIcon sx={{ color: '#000' }} />
+                        </Tooltip>
                       </IconButton>
                       <IconButton onClick={() => navigate(`/surf/${ad._id}`)}>
-                        <EqualizerIcon sx={{ color: '#2196F3' }} />
+                        <Tooltip title='Statistics'>
+                          <EqualizerIcon sx={{ color: '#2196F3' }} />
+                        </Tooltip>
                       </IconButton>
                       <IconButton onClick={() => {deleteAdvert(ad._id, ad.url)}}>
-                        <DeleteIcon sx={{ color: '#F44336' }} />
+                        <Tooltip title='Delete ad'>
+                          <DeleteIcon sx={{ color: '#F44336' }} />
+                        </Tooltip>
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -229,6 +265,9 @@ const SurfProjects: FC = (props) => {
           <Typography variant="body1">Registered users online: 2215</Typography>
         </CardContent>
       </CustomCard>
+    </Layout> : 
+    <Layout title=''>
+      
     </Layout>
   )
 }

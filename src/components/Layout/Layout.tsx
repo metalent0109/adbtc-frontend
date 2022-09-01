@@ -34,10 +34,8 @@ import Footer from 'components/Footer'
 import BalanceCard from './components/BalanceCard'
 import MenuCollapse from './components/MenuCollapse'
 import Sidebar from './components/Sidebar'
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "redux/store"
 import styles from 'assets/jss/components/adminLayoutStyles'
-import { getAUser, logout } from 'redux/reducers/authSlice';
+import  useAuth  from 'hooks/useAuth'
 import { auth, logoutGoogleUser } from 'firebaseSetup'
 
 const useStyles = makeStyles(styles)
@@ -50,18 +48,16 @@ interface Props {
 const Layout: FC<Props> = (props) => {
   const classes = useStyles()
   const [user] = useAuthState(auth)
-  const { userData } = useSelector((state: RootState) => state.auth)
-  // console.log("this is user data", userData)
+  const { userData, getAUser, logout } = useAuth();
 
   const { children, title } = props
-  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    dispatch(getAUser())
-  }, [dispatch])
+    getAUser()
+  }, [])
 
   const menuList = [
     {
@@ -71,35 +67,35 @@ const Layout: FC<Props> = (props) => {
         {
           title: 'Surf ads',
           link: '/surf/browse',
-          icon: <LaptopIcon />,
+          icon: <LaptopIcon />
         },
         {
           title: 'Surf ads ₽',
           link: '/surfiat/browse',
-          icon: <LaptopIcon />,
+          icon: <LaptopIcon />
         },
         {
           title: 'Video ads',
           link: '/video/inf',
-          icon: <OndemandVideoIcon />,
+          icon: <OndemandVideoIcon />
         },
         {
           title: 'Active window surfing',
           link: '/surftab/inf',
-          icon: <WebIcon />,
+          icon: <WebIcon />
         },
         {
           title: 'Autosurfing',
           link: 'https://adbtc.top/autosurf/session',
           target: '_blank',
-          icon: <RepeatIcon />,
+          icon: <RepeatIcon />
         },
         {
           title: 'Shortlinks',
           link: '/shortlink',
-          icon: <InsertLinkIcon />,
+          icon: <InsertLinkIcon />
         },
-      ],
+      ]
     },
     {
       id: 2,
@@ -107,22 +103,22 @@ const Layout: FC<Props> = (props) => {
         {
           title: 'Withdraw',
           link: '/acc/balance',
-          icon: <CreditCardIcon />,
+          icon: <CreditCardIcon />
         },
         {
           title: 'Referral system',
           link: '/acc/ref',
-          icon: <ContactsIcon />,
+          icon: <ContactsIcon />
         },
         {
           title: 'Change Wallet',
           link: '/acc/change_wallet',
-          icon: <SettingsIcon />,
+          icon: <SettingsIcon />
         },
         {
           title: 'Security',
           link: '/security',
-          icon: <HttpsIcon />,
+          icon: <HttpsIcon />
         },
       ],
     },
@@ -133,27 +129,27 @@ const Layout: FC<Props> = (props) => {
         {
           title: 'Surf ads',
           link: '/surf/projects',
-          icon: <FormatListBulletedIcon />,
+          icon: <FormatListBulletedIcon />
         },
         {
           title: 'Surf ads ₽',
           link: '/surfiat/projects/',
-          icon: <FormatListBulletedIcon />,
+          icon: <FormatListBulletedIcon />
         },
         {
           title: 'Video ads',
           link: '/video/projects',
-          icon: <OndemandVideoIcon />,
+          icon: <OndemandVideoIcon />
         },
         {
           title: 'Active window surfing',
           link: '/surftab/projects',
-          icon: <WebIcon />,
+          icon: <WebIcon />
         },
         {
           title: 'Autosurfing',
           link: '/autosurf/projects',
-          icon: <RepeatIcon />,
+          icon: <RepeatIcon />
         },
       ],
     },
@@ -163,27 +159,27 @@ const Layout: FC<Props> = (props) => {
         {
           title: 'Referral market',
           link: '/market/index',
-          icon: <PersonPinIcon />,
+          icon: <PersonPinIcon />
         },
         {
           title: 'Help',
           link: '/help',
-          icon: <HelpOutlineOutlinedIcon />,
+          icon: <HelpOutlineOutlinedIcon />
         },
         {
           title: 'Top surfers',
           link: '/info/top',
-          icon: <StarIcon />,
+          icon: <StarIcon />
         },
         {
           title: 'Account info',
           link: '/info/me',
-          icon: <InsertChartIcon />,
+          icon: <InsertChartIcon />
         },
         {
           title: 'Settings',
           link: '/acc/options',
-          icon: <SettingsIcon />,
+          icon: <SettingsIcon />
         },
       ],
     },
@@ -199,13 +195,13 @@ const Layout: FC<Props> = (props) => {
     // },
   ]
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
     if (user) {
       logoutGoogleUser()
-      dispatch(logout())
+      await logout()
       navigate('/login')
     } else {
-      dispatch(logout())
+      await logout()
       navigate('/login')
     }
   }

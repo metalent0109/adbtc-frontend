@@ -1,10 +1,10 @@
-import api from "api/api";
-import { ICreateAds } from "modules/types/ads";
+import axios from "./api/axios";
+import { ICreateAds } from "interfaces/ads";
 
 // create an Ad
 const createAdvert = async (adData: ICreateAds) => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
-  await api
+  return await axios
     .post("ads/createAds", adData, {
       headers: {
         authorization: `Bearer ${token}`
@@ -19,10 +19,29 @@ const createAdvert = async (adData: ICreateAds) => {
     });
 };
 
+// update an Ad
+const updateAdvert = async (adData: ICreateAds, id: string) => {
+  const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+  return await axios
+    .put(`ads/updateAds/${id}`, adData, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then((updatedAd) => {
+      return updatedAd.data.message;
+    })
+    .catch((error) => {
+      console.log(error.response.data.error);
+      return error.response.data.error;
+    });
+};
+
+
 // Get all ads
 const getAllAds = async () => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
-  const response = await api.get("ads/getAllAds", {
+  const response = await axios.get("ads/getAllAds", {
     headers: {
       authorization: `Bearer ${token}`
     }
@@ -35,7 +54,7 @@ const getAllAds = async () => {
 // Get ads created by me
 const getMyAds = async () => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
-  const response = await api.get("ads/getMyAds", {
+  const response = await axios.get("ads/getMyAds", {
     headers: {
       authorization: `Bearer ${token}`
     }
@@ -43,10 +62,29 @@ const getMyAds = async () => {
   return response.data.ads;
 };
 
+// Get ad by id
+const getAdById = async(id: string) => {
+  const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+  return await axios
+    .get(`ads/getAdById/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then((adById) => {
+      console.log(adById);
+      return adById.data.ads;
+    })
+    .catch((error) => {
+      console.log(error.response.data.error);
+      return error.response.data.error;
+    });
+}
+
 // Surf ads
 const surfAds = async (id: string) => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
-  await api
+  return await axios
     .get(`ads/surfAds/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
@@ -61,11 +99,11 @@ const surfAds = async (id: string) => {
     });
 };
 
-// Deposit satoshi
-const depositSatoshi = async (id: string) => {
+// Fund satoshi
+const fundSatoshi = async (id: string) => {
   const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
-  await api
-    .get(`ads/depositSatoshi/${id}`, {
+  return await axios
+    .get(`ads/fundSatoshi/${id}`, {
       headers: {
         authorization: `Bearer ${token}`
       }
@@ -74,17 +112,18 @@ const depositSatoshi = async (id: string) => {
       return satoshi.data.message;
     })
     .catch((error) => {
-      console.log(error.response.data.error);
       return error.response.data.error;
     });
 };
 
 const adsService = {
   createAdvert,
+  updateAdvert,
   getAllAds,
   getMyAds,
+  getAdById,
   surfAds,
-  depositSatoshi
+  fundSatoshi
 };
 
 export default adsService;

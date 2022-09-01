@@ -6,8 +6,6 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import * as yup from "yup";
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "redux/store"
 
 import { makeStyles } from "@mui/styles";
 
@@ -22,7 +20,8 @@ import CustomTextField from 'components/CustomTextField'
 import CustomButton from 'components/CustomButton'
 
 import styles from 'assets/jss/pages/authStyles'
-import { passwordReset } from 'redux/reducers/authSlice';
+import  useAuth  from 'hooks/useAuth'
+
 
 const useStyles = makeStyles(styles)
 
@@ -35,11 +34,11 @@ const defaultValues = {
 }
 
 const ForgotPassword: VFC = () => {
-  const { isSuccess, isLoading, message } = useSelector((state: RootState) => state.auth)
-  const dispatch = useDispatch<AppDispatch>()
+  const { isSuccess, isLoading, message, passwordReset } = useAuth();
 
   const classes = useStyles()
   const navigate = useNavigate()
+  
   useEffect(() => {
     if (isLoading) return
     if (message) {
@@ -65,7 +64,7 @@ const ForgotPassword: VFC = () => {
               initialValues={{ ...defaultValues }}
               validationSchema={ResetPasswordFormSchema}
               onSubmit={(values) => {
-                dispatch(passwordReset(values))
+                passwordReset(values)
               }}
             >
               {

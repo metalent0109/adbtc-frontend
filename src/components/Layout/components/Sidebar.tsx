@@ -6,9 +6,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import SettingsPowerIcon from '@mui/icons-material/SettingsPower'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'redux/store'
-import { logout } from 'redux/reducers/authSlice'
+import useAuth from 'hooks/useAuth'
 
 import BalanceCard from './BalanceCard'
 import MenuCollapse from './MenuCollapse'
@@ -28,13 +26,12 @@ interface Props {
 
 const Sidebar: FC<Props> = (props) => {
   const classes = useStyles()
-
+  const { logout } = useAuth();
   const { open, handleClose, menuList, userData } = props
-  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
   const logoutUser = () => {
-    dispatch(logout())
+    logout()
     navigate('/login')
   }
 
