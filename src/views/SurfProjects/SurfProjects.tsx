@@ -39,7 +39,8 @@ import { updateImportClause } from 'typescript'
 const useStyles = makeStyles(styles)
 
 const SurfProjects: FC = (props) => {
-  const { myAds, isLoading, getAdsCreatedByMe } = useAds();
+  const { myAds, isLoading, getAdsCreatedByMe } = useAds()
+  const {isDeleted, setIsDeleted, deleteAdvert} = useAuth()
 
   const [successMsg, setSuccessMsg] = useState(null)
   // console.log('this is my ads', myAds)
@@ -48,7 +49,7 @@ const SurfProjects: FC = (props) => {
   const classes = useStyles()
 
   const created = myAds.length > 0 ? true : false;
-
+  
   const rows = [
     {
       id: 1,
@@ -72,21 +73,8 @@ const SurfProjects: FC = (props) => {
     },
   ]
 
-  const deleteAdvert = async (id: string, url: string) => {
-    const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
-    alert(`Are you sure to delete this ads with advertisement ${url}`)
-    await axios
-    .delete(`ads/deleteAds/${id}`, {
-      headers: {
-        authorization: `Bearer ${token}`
-      }
-    })
-    .then((deletdAd) => {
-      setSuccessMsg(deletdAd.data.message);
-    })
-    .catch((error) => {
-      return error.response.data.error;
-    });
+  const delAdvert = (id: string, url: string) => {
+    deleteAdvert(id, url)
   }
 
   const updateAdStatus = async (id: string) => {
@@ -112,7 +100,12 @@ const SurfProjects: FC = (props) => {
       setSuccessMsg(null);
       navigate('/surf/projects')
     }
-  }, [successMsg, navigate])
+    if(isDeleted) {
+      toast.success("Successfully deleted!")
+      setIsDeleted(false)
+      navigate(0)
+    }
+  }, [successMsg, isDeleted, navigate])
 
   return (
     isLoading ? 
@@ -184,8 +177,10 @@ const SurfProjects: FC = (props) => {
                     </TableCell>
                     <TableCell align="center">{ad.escrowAmount}</TableCell>
                     <TableCell align="center">
-                      {ad.isPublished && 'Showing'} &nbsp;{' '}
-                      {!ad.isPublished && ('Not showing')} &nbsp; <br />
+                      {
+                        ad.isPublished && !ad.isPause ? 'Showing' : 'Not showing'
+                      }
+                      <br />
                       {!ad.isPublishd && (
                         <Link
                           component="button"
@@ -200,10 +195,10 @@ const SurfProjects: FC = (props) => {
                       <IconButton onClick={() => updateAdStatus(ad._id)}>
                         {
                           ad.isPause ?
-                          <Tooltip title='Pause ad'>
+                          <Tooltip title='Resume ad'>
                             <PlayArrow sx={{ color: '#2896F3' }} />
                           </Tooltip> :
-                          <Tooltip title='Resume ad'>
+                          <Tooltip title='Pause ad'>
                             <PauseIcon sx={{ color: '#ff9800' }} />
                           </Tooltip>
                         }
@@ -229,7 +224,7 @@ const SurfProjects: FC = (props) => {
                           <EqualizerIcon sx={{ color: '#2196F3' }} />
                         </Tooltip>
                       </IconButton>
-                      <IconButton onClick={() => {deleteAdvert(ad._id, ad.url)}}>
+                      <IconButton onClick={() => {delAdvert(ad._id, ad.url)}}>
                         <Tooltip title='Delete ad'>
                           <DeleteIcon sx={{ color: '#F44336' }} />
                         </Tooltip>

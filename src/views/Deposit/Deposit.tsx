@@ -71,10 +71,10 @@ const Deposit: FC = () => {
         <CustomButton variant='contained' btnColor='primary' sx={{ margin: '0 4px 4px 0' }} onClick={() => navigate('/faucetpay/deposit')}>
           Pay with FaucetPay
         </CustomButton>
-        <CustomButton variant='contained' btnColor='success' sx={{ margin: '0 4px 4px 0' }} onClick={() => navigate('/payeer/fund')}>
+        <CustomButton variant='contained' btnColor='success' disabled sx={{ margin: '0 4px 4px 0' }} onClick={() => navigate('/payeer/fund')}>
           Deposit using PAYEER
         </CustomButton>
-        <CustomButton variant='contained' btnColor='gray' sx={{ margin: '0 4px 4px 0' }} onClick={() => navigate('/index/move_balance')}>
+        <CustomButton variant='contained' btnColor='gray' disabled sx={{ margin: '0 4px 4px 0' }} onClick={() => navigate('/index/move_balance')}>
           Move from main balance
           <SwapVertIcon />
         </CustomButton>

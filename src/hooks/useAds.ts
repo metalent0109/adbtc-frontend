@@ -161,6 +161,27 @@ const useAds = () => {
         }
     }
 
+    // Get surf ad by id
+    const getSurfAdById = async (id: string) => {
+        try {
+            const data = await adsService.getSurfAdById(id);
+            setAds(data);
+            setIsLoading(true);
+            return data;
+        } catch (error: any) {
+        const message =
+            (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            error.message ||
+            error.toString();
+        setIsError(true);
+        setMessage(message);
+        setAds(null)
+        return message;
+        }
+    }
+
     //reset
     const reset = () => {
         setIsSuccess(false);
@@ -186,6 +207,7 @@ const useAds = () => {
         surfAdvert,
         fundSatoshi,
         getAdById,
+        getSurfAdById,
         reset 
     };
 };

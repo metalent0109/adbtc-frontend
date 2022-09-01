@@ -100,6 +100,38 @@ const updateSurfingBalance = async (surfingAmount: any, id: string) => {
     })
 }
 
+//deposit fund
+const depositFund = async(depositAmount: any) => {
+  const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+  return await axios
+    .put(`user/depositFund`, {depositAmount}, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then((updatedUser) => {
+      return updatedUser.data.message;
+    })
+}
+
+//delete advert
+const deleteAdvert = async (id: string, url: string) => {
+  const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+  alert(`Are you sure to delete this ads with advertisement ${url}`)
+  await axios
+  .delete(`ads/deleteAds/${id}`, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  })
+  .then((deletdAd) => {
+    return deletdAd.data
+  })
+  .catch((error) => {
+    return error.response.data.error;
+  });
+}
+
 // Logout user
 const logout = () => {
   localStorage.removeItem("jwtToken");
@@ -115,6 +147,8 @@ const authService = {
   reset,
   regWithGoogle,
   updateSurfingBalance,
+  depositFund,
+  deleteAdvert,
   logout
 };
 

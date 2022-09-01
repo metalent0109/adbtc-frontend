@@ -72,7 +72,24 @@ const getAdById = async(id: string) => {
       }
     })
     .then((adById) => {
-      console.log(adById);
+      return adById.data.ads;
+    })
+    .catch((error) => {
+      console.log(error.response.data.error);
+      return error.response.data.error;
+    });
+}
+
+// Get surf ad by id
+const getSurfAdById = async(id: string) => {
+  const token = JSON.parse(localStorage.getItem("jwtToken") || "{}");
+  return await axios
+    .get(`ads/getSurfAdById/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then((adById) => {
       return adById.data.ads;
     })
     .catch((error) => {
@@ -122,6 +139,7 @@ const adsService = {
   getAllAds,
   getMyAds,
   getAdById,
+  getSurfAdById,
   surfAds,
   fundSatoshi
 };

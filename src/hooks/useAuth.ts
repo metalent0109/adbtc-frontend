@@ -14,6 +14,8 @@ const useAuth = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [surfSuccess, setSurfSuccess] = useState<boolean>(false);
+  const [isDeposited, setIsDeposited] = useState<boolean>(false);
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [message, setMessage] = useState<any>("");
   const [users, setUsers] = useState<Array<any>>([]);
   const [userData, setUserData] = useState<any>(null);
@@ -154,9 +156,7 @@ const useAuth = () => {
   }
 
   // save surfing balance
-
   const updateSurfingBalance = async (surfingAmount: any, id: string) => {
-    console.log("id", id);
     try {
       const data = await authService.updateSurfingBalance(surfingAmount, id);
       setMessage(data);
@@ -171,6 +171,34 @@ const useAuth = () => {
       setIsError(true);
       setSurfSuccess(false);
       setUserData(null);
+    }
+  }
+
+  //deposit funds
+  const depositFund = async (depositAmount: any) => {
+    try {
+      const data = await authService.depositFund(depositAmount);
+      setMessage(data);
+      setIsDeposited(true);
+    } catch(error: any) {
+      setMessage("Error. Try again")
+      setIsError(true);
+      setSurfSuccess(false);
+      setIsDeposited(false)
+      setUserData(null);
+    }
+  }
+
+  //delete advert
+  const deleteAdvert = async(id: string, url: string) => {
+    try {
+      const data = await authService.deleteAdvert(id, url);
+      setUserData(data);
+      setIsDeleted(true);
+    } catch(error: any) {
+      setMessage("Error. Try again")
+      setIsError(true);
+      setIsDeleted(false)
     }
   }
 
@@ -215,12 +243,17 @@ const useAuth = () => {
     isLoading,
     userData,
     surfSuccess,
+    isDeposited,
+    isDeleted,
     registerUser,
     regGoogleAuthenticationData,
     loginUser,
     passwordReset,
     getAUser,
     updateSurfingBalance,
+    depositFund,
+    deleteAdvert,
+    setIsDeleted,
     logout,
     reset
   }

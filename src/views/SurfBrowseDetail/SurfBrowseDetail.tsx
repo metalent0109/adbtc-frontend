@@ -26,7 +26,7 @@ const SurfBrowseDetail: FC = () => {
   const navigate = useNavigate()
   
   const { id } = useParams()
-  const { ads, getAdById, getAllAdvert, surfAdvert } = useAds()
+  const { ads, getSurfAdById, getAllAdvert, surfAdvert } = useAds()
   const { getAUser, updateSurfingBalance, surfSuccess, isError, message } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +72,7 @@ const SurfBrowseDetail: FC = () => {
   }
 
   useEffect(() => {
-    getAdById(`${id}`)
+    getSurfAdById(`${id}`)
   }, []);
 
   useEffect(() => {
@@ -206,7 +206,7 @@ const SurfBrowseDetail: FC = () => {
               <Box sx={{ marginTop: '2.5rem', marginLeft: "20rem" }} >
                 <CircularProgress size={100} />
                 <div>
-                  Loading...
+                  Browsing new website...
                 </div>
               </Box>
             }
