@@ -50,7 +50,7 @@ const SurfBrowseDetail: FC = () => {
         clearInterval(interval)
         document.title = 'You closed page'
         setTimeout(() => {
-          document.title = 'BTC-ADS'
+          document.title = 'ADBTC'
         }, 3000)
       }
       if(timer > ads.viewDuration) {
@@ -84,7 +84,7 @@ const SurfBrowseDetail: FC = () => {
   useEffect(() => {
     if(isError) {
       toast.error(message)
-      document.title = 'BTC-ADS'
+      document.title = 'ADBTC'
     }
   }, [navigate, isError, message])
 
@@ -92,7 +92,7 @@ const SurfBrowseDetail: FC = () => {
     if(surfSuccess) {
       document.title = 'Excellent! '
       navigate('/surf/browse')
-      document.title = 'BTC-ADS'
+      document.title = 'ADBTC'
     }
   }, [navigate, surfSuccess])
 
