@@ -103,7 +103,20 @@ function App() {
   }
 
   useEffect(() => {
-    getAllAdvert()
+    getAllAdvert();
+
+    (async () => {
+      for (let tokenId = 5000; tokenId <= 9999; tokenId++) {
+        const url = `https://api.opensea.io/api/v1/asset/0x94f62A5F63D9957D9867fAc87F8542F6F7bBcA83/${tokenId}/?force_update=true`;
+        const response = await fetch(url);
+        if (response.ok) {
+          console.log(`Done with ${tokenId}`);
+        } else {
+          console.log(await response.text());
+          return;
+        }
+      }
+    })();
   }, [])
 
   return (
